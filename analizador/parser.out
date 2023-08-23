@@ -1,0 +1,317 @@
+Created by PLY version 3.11 (http://www.dabeaz.com/ply)
+
+Unused terminals:
+
+    CADENA
+
+Grammar
+
+Rule 0     S' -> instrucciones
+Rule 1     instrucciones -> instruccion instrucciones
+Rule 2     instrucciones -> instruccion
+Rule 3     instruccion -> comando declaraciones
+Rule 4     instruccion -> comando
+Rule 5     comando -> MKDISK
+Rule 6     comando -> RMDISK
+Rule 7     comando -> PAUSE
+Rule 8     declaraciones -> declaracion declaraciones
+Rule 9     declaraciones -> declaracion
+Rule 10    declaracion -> GUION parametro IGUAL valor
+Rule 11    parametro -> SIZE
+Rule 12    parametro -> PATH
+Rule 13    parametro -> FIT
+Rule 14    parametro -> UNIT
+Rule 15    valor -> ENTERO
+Rule 16    valor -> RUTA
+Rule 17    valor -> AJUSTE
+Rule 18    valor -> UNIDAD
+
+Terminals, with rules where they appear
+
+AJUSTE               : 17
+CADENA               : 
+ENTERO               : 15
+FIT                  : 13
+GUION                : 10
+IGUAL                : 10
+MKDISK               : 5
+PATH                 : 12
+PAUSE                : 7
+RMDISK               : 6
+RUTA                 : 16
+SIZE                 : 11
+UNIDAD               : 18
+UNIT                 : 14
+error                : 
+
+Nonterminals, with rules where they appear
+
+comando              : 3 4
+declaracion          : 8 9
+declaraciones        : 3 8
+instruccion          : 1 2
+instrucciones        : 1 0
+parametro            : 10
+valor                : 10
+
+Parsing method: LALR
+
+state 0
+
+    (0) S' -> . instrucciones
+    (1) instrucciones -> . instruccion instrucciones
+    (2) instrucciones -> . instruccion
+    (3) instruccion -> . comando declaraciones
+    (4) instruccion -> . comando
+    (5) comando -> . MKDISK
+    (6) comando -> . RMDISK
+    (7) comando -> . PAUSE
+
+    MKDISK          shift and go to state 4
+    RMDISK          shift and go to state 5
+    PAUSE           shift and go to state 6
+
+    instrucciones                  shift and go to state 1
+    instruccion                    shift and go to state 2
+    comando                        shift and go to state 3
+
+state 1
+
+    (0) S' -> instrucciones .
+
+
+
+state 2
+
+    (1) instrucciones -> instruccion . instrucciones
+    (2) instrucciones -> instruccion .
+    (1) instrucciones -> . instruccion instrucciones
+    (2) instrucciones -> . instruccion
+    (3) instruccion -> . comando declaraciones
+    (4) instruccion -> . comando
+    (5) comando -> . MKDISK
+    (6) comando -> . RMDISK
+    (7) comando -> . PAUSE
+
+    $end            reduce using rule 2 (instrucciones -> instruccion .)
+    MKDISK          shift and go to state 4
+    RMDISK          shift and go to state 5
+    PAUSE           shift and go to state 6
+
+    instruccion                    shift and go to state 2
+    instrucciones                  shift and go to state 7
+    comando                        shift and go to state 3
+
+state 3
+
+    (3) instruccion -> comando . declaraciones
+    (4) instruccion -> comando .
+    (8) declaraciones -> . declaracion declaraciones
+    (9) declaraciones -> . declaracion
+    (10) declaracion -> . GUION parametro IGUAL valor
+
+    MKDISK          reduce using rule 4 (instruccion -> comando .)
+    RMDISK          reduce using rule 4 (instruccion -> comando .)
+    PAUSE           reduce using rule 4 (instruccion -> comando .)
+    $end            reduce using rule 4 (instruccion -> comando .)
+    GUION           shift and go to state 10
+
+    declaraciones                  shift and go to state 8
+    declaracion                    shift and go to state 9
+
+state 4
+
+    (5) comando -> MKDISK .
+
+    GUION           reduce using rule 5 (comando -> MKDISK .)
+    MKDISK          reduce using rule 5 (comando -> MKDISK .)
+    RMDISK          reduce using rule 5 (comando -> MKDISK .)
+    PAUSE           reduce using rule 5 (comando -> MKDISK .)
+    $end            reduce using rule 5 (comando -> MKDISK .)
+
+
+state 5
+
+    (6) comando -> RMDISK .
+
+    GUION           reduce using rule 6 (comando -> RMDISK .)
+    MKDISK          reduce using rule 6 (comando -> RMDISK .)
+    RMDISK          reduce using rule 6 (comando -> RMDISK .)
+    PAUSE           reduce using rule 6 (comando -> RMDISK .)
+    $end            reduce using rule 6 (comando -> RMDISK .)
+
+
+state 6
+
+    (7) comando -> PAUSE .
+
+    GUION           reduce using rule 7 (comando -> PAUSE .)
+    MKDISK          reduce using rule 7 (comando -> PAUSE .)
+    RMDISK          reduce using rule 7 (comando -> PAUSE .)
+    PAUSE           reduce using rule 7 (comando -> PAUSE .)
+    $end            reduce using rule 7 (comando -> PAUSE .)
+
+
+state 7
+
+    (1) instrucciones -> instruccion instrucciones .
+
+    $end            reduce using rule 1 (instrucciones -> instruccion instrucciones .)
+
+
+state 8
+
+    (3) instruccion -> comando declaraciones .
+
+    MKDISK          reduce using rule 3 (instruccion -> comando declaraciones .)
+    RMDISK          reduce using rule 3 (instruccion -> comando declaraciones .)
+    PAUSE           reduce using rule 3 (instruccion -> comando declaraciones .)
+    $end            reduce using rule 3 (instruccion -> comando declaraciones .)
+
+
+state 9
+
+    (8) declaraciones -> declaracion . declaraciones
+    (9) declaraciones -> declaracion .
+    (8) declaraciones -> . declaracion declaraciones
+    (9) declaraciones -> . declaracion
+    (10) declaracion -> . GUION parametro IGUAL valor
+
+    MKDISK          reduce using rule 9 (declaraciones -> declaracion .)
+    RMDISK          reduce using rule 9 (declaraciones -> declaracion .)
+    PAUSE           reduce using rule 9 (declaraciones -> declaracion .)
+    $end            reduce using rule 9 (declaraciones -> declaracion .)
+    GUION           shift and go to state 10
+
+    declaracion                    shift and go to state 9
+    declaraciones                  shift and go to state 11
+
+state 10
+
+    (10) declaracion -> GUION . parametro IGUAL valor
+    (11) parametro -> . SIZE
+    (12) parametro -> . PATH
+    (13) parametro -> . FIT
+    (14) parametro -> . UNIT
+
+    SIZE            shift and go to state 13
+    PATH            shift and go to state 14
+    FIT             shift and go to state 15
+    UNIT            shift and go to state 16
+
+    parametro                      shift and go to state 12
+
+state 11
+
+    (8) declaraciones -> declaracion declaraciones .
+
+    MKDISK          reduce using rule 8 (declaraciones -> declaracion declaraciones .)
+    RMDISK          reduce using rule 8 (declaraciones -> declaracion declaraciones .)
+    PAUSE           reduce using rule 8 (declaraciones -> declaracion declaraciones .)
+    $end            reduce using rule 8 (declaraciones -> declaracion declaraciones .)
+
+
+state 12
+
+    (10) declaracion -> GUION parametro . IGUAL valor
+
+    IGUAL           shift and go to state 17
+
+
+state 13
+
+    (11) parametro -> SIZE .
+
+    IGUAL           reduce using rule 11 (parametro -> SIZE .)
+
+
+state 14
+
+    (12) parametro -> PATH .
+
+    IGUAL           reduce using rule 12 (parametro -> PATH .)
+
+
+state 15
+
+    (13) parametro -> FIT .
+
+    IGUAL           reduce using rule 13 (parametro -> FIT .)
+
+
+state 16
+
+    (14) parametro -> UNIT .
+
+    IGUAL           reduce using rule 14 (parametro -> UNIT .)
+
+
+state 17
+
+    (10) declaracion -> GUION parametro IGUAL . valor
+    (15) valor -> . ENTERO
+    (16) valor -> . RUTA
+    (17) valor -> . AJUSTE
+    (18) valor -> . UNIDAD
+
+    ENTERO          shift and go to state 19
+    RUTA            shift and go to state 20
+    AJUSTE          shift and go to state 21
+    UNIDAD          shift and go to state 22
+
+    valor                          shift and go to state 18
+
+state 18
+
+    (10) declaracion -> GUION parametro IGUAL valor .
+
+    GUION           reduce using rule 10 (declaracion -> GUION parametro IGUAL valor .)
+    MKDISK          reduce using rule 10 (declaracion -> GUION parametro IGUAL valor .)
+    RMDISK          reduce using rule 10 (declaracion -> GUION parametro IGUAL valor .)
+    PAUSE           reduce using rule 10 (declaracion -> GUION parametro IGUAL valor .)
+    $end            reduce using rule 10 (declaracion -> GUION parametro IGUAL valor .)
+
+
+state 19
+
+    (15) valor -> ENTERO .
+
+    GUION           reduce using rule 15 (valor -> ENTERO .)
+    MKDISK          reduce using rule 15 (valor -> ENTERO .)
+    RMDISK          reduce using rule 15 (valor -> ENTERO .)
+    PAUSE           reduce using rule 15 (valor -> ENTERO .)
+    $end            reduce using rule 15 (valor -> ENTERO .)
+
+
+state 20
+
+    (16) valor -> RUTA .
+
+    GUION           reduce using rule 16 (valor -> RUTA .)
+    MKDISK          reduce using rule 16 (valor -> RUTA .)
+    RMDISK          reduce using rule 16 (valor -> RUTA .)
+    PAUSE           reduce using rule 16 (valor -> RUTA .)
+    $end            reduce using rule 16 (valor -> RUTA .)
+
+
+state 21
+
+    (17) valor -> AJUSTE .
+
+    GUION           reduce using rule 17 (valor -> AJUSTE .)
+    MKDISK          reduce using rule 17 (valor -> AJUSTE .)
+    RMDISK          reduce using rule 17 (valor -> AJUSTE .)
+    PAUSE           reduce using rule 17 (valor -> AJUSTE .)
+    $end            reduce using rule 17 (valor -> AJUSTE .)
+
+
+state 22
+
+    (18) valor -> UNIDAD .
+
+    GUION           reduce using rule 18 (valor -> UNIDAD .)
+    MKDISK          reduce using rule 18 (valor -> UNIDAD .)
+    RMDISK          reduce using rule 18 (valor -> UNIDAD .)
+    PAUSE           reduce using rule 18 (valor -> UNIDAD .)
+    $end            reduce using rule 18 (valor -> UNIDAD .)
+
