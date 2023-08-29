@@ -21,7 +21,7 @@ def comando_ejecutar(parametro, valor):
     #COMANDO MKDISK
     if (comando == "mkdisk"):
         if (parametro == 'size'):
-            disk.setSize(valor)
+            disk.setSize(int(valor))
         elif (parametro == 'path'):
             disk.setPath(valor)
         elif (parametro == 'fit'):
@@ -46,6 +46,7 @@ def comando_ejecutar(parametro, valor):
                 print('No se pudo crear el disco.')
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO RMDISK
     elif (comando == "rmdisk"):
         if (parametro == 'path'):      
@@ -72,9 +73,10 @@ def comando_ejecutar(parametro, valor):
             print("¡Error! parametro no valido.")
     #COMANDO FDISK
     elif (comando == 'fdisk'):
+        ruta_disco = "lo hice solo para arreglar el error"
         if (parametro == 'size'):
             if (int(valor) > 0):
-                disk.size = valor
+                disk.size = int(valor)
             else:
                 print("¡Ocurrio un error al asignar valor al parametro 'size'.\nEl valor debe ser mayor a 0.")
         elif (parametro == 'path'):
@@ -83,16 +85,36 @@ def comando_ejecutar(parametro, valor):
             disk.name = valor
         elif (parametro == 'unit'):
             disk.unit = valor
-        elif (parametro == 'type'):
-            disk.type = valor
-        elif (parametro == 'fit'):
-            disk.fit = valor
-        elif (parametro == 'delete'):
-            disk.delete = valor
-        elif (parametro == 'add'):
-            disk.add = valor
+        elif (parametro == 'ejecutar'):
+            mbr = Mkdisk()
+            with open(ruta_disco, 'rb+') as archivo:
+                archivo.seek(0)
+                contenido = archivo.read(mbr.getLength())
+                archivo.close()
+            mbr = mbr.unpack_data(contenido)
+            partitionFree = mbr.getPartitionFree()
+            if partitionFree != None:
+                if (disk.getUnit() == 'M'):
+                    mbr.setSizePartition(partitionFree+(disk.getSize()*1024*1024))
+                elif (disk.getUnit() == 'K'):
+                    mbr.setSizePartition(partitionFree+(disk.getSize()*1024))
+                else:
+                    mbr.setSizePartition(partitionFree+disk.getSize())
+                #escribir en archivo mbr
+                with open(disk.getPath(), 'rb+') as archivo:
+                    archivo.write(mbr.pack_data())
+                    archivo.close()
+                #escribir en archivo particion
+                with open(disk.getPath(), 'rb+') as archivo:
+                    archivo.seek(partitionFree)
+                    archivo.write(disk.pack_data())
+                    archivo.close()
+                print('¡Particion creada exitosamente!')
+            else: 
+                print('Las 4 particiones permitidas, ya han sido usadas.')
         else:
             print("¡Error! parametro no valido.")
+        return None
     #cOMANDO MOUNT
     elif (comando == 'mount'):
         if (parametro == 'path'):
