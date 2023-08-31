@@ -1,7 +1,7 @@
 import struct
 
 class Partition:
-    def __init__(self, part_status = None, part_type = None, part_fit = None, part_start = None, part_s = None, part_name = None):
+    def __init__(self, part_status = "I", part_type = "P", part_fit = "W", part_start = 0, part_s = 0, part_name = ""):
         self.part_status = part_status
         self.part_type = part_type
         self.part_fit = part_fit
@@ -48,7 +48,6 @@ class Partition:
         return self.part_name
     
     #Empaquetar_Desempaquetar
-    
     def pack_data(self):
         return struct.pack('cccii16s', self.part_status.encode(), self.part_type.encode(), self.part_fit.encode(), self.part_start, self.part_s, self.part_name.encode())
 
@@ -58,10 +57,10 @@ class Partition:
         return cls(part_status.decode(), part_type.decode(), part_fit.decode(), part_start, part_s, part_name.decode())
     
     def getLength(self):
-        return 27
+        return 28
 
 '''
-part = Partition("A", "P", "F", 1500, 3000, "particion_1")
+part = Partition("I", "P", "W", 1500, 3000, "particion1")
 pack = part.pack_data()
 print(pack)
 unpack = part.unpack_data(pack)

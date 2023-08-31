@@ -1,12 +1,3 @@
-'''
-txt = '"/home/user/Disco1.dsk"'
-x = txt.split("/")[-1].replace('"', '')
-print(x)
-'''
-
-from datetime import datetime
-curr_dt = datetime.now()
-timestamp = int(round(curr_dt.timestamp()))
-timestamp_bytes = timestamp.to_bytes(8, byteorder='big')
-
-print("Timestamp en bytes:", timestamp_bytes)
+with open('users.txt', 'w') as archivo:
+    archivo.write("1, G, root \n")
+    archivo.write("1, U, root, root, 123 \n")

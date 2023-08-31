@@ -1,117 +1,192 @@
 import os
-from comandos.mkdisk import Mkdisk
-from comandos.rmdisk import Rmdisk
-from comandos.fdisk import Fdisk
+import random
+from datetime import datetime
+from analizador.comandos.login import Login
+from analizador.comandos.mkdisk import Mkdisk
+from analizador.comandos.mbr import Mbr
+from analizador.comandos.partition import Partition
+from analizador.comandos.rmdisk import Rmdisk
+from analizador.comandos.fdisk import Fdisk
 
-global comando, disk
+global comando, script, usuario_actual
+usuario_actual = ""
 
 def comando_activar(valor):
-    global comando, disk
+    global comando, script
     comando = valor
 
     if (comando == "mkdisk"):
-        disk = Mkdisk()
+        script = Mkdisk()
     elif (comando == "rmdisk"):
-        disk = Rmdisk()
+        script = Rmdisk()
     elif (comando == "fdisk"):
-        disk = Fdisk()
+        script = Fdisk()
+    elif (comando == "login"):
+        script = Login()
+    elif (comando == "logout"):
+        pass
 
 def comando_ejecutar(parametro, valor):
-    global comando, disk
+    global comando, script, usuario_actual
     #COMANDO MKDISK
     if (comando == "mkdisk"):
         if (parametro == 'size'):
-            disk.setSize(int(valor))
+            script.setSize(int(valor))
         elif (parametro == 'path'):
-            disk.setPath(valor)
+            script.setPath(valor)
         elif (parametro == 'fit'):
-            disk.setFit(valor)
+            script.setFit(valor)
         elif (parametro == 'unit'):
-            disk.setUnit(valor)
+            script.setUnit(valor)
         elif (parametro == "ejecutar"):
-            if (disk.errors == 0):
+            if (script.errors == 0):
                 #crear un arhivo vacio
-                size_file = int(disk.size)
-                if (disk.unit == "M"):
+                size_file = script.getSize()
+                if (script.getUnit() == "M"):
                     size_file = size_file * 1024
-                with open(disk.getPath(), 'wb') as archivo:
+                with open(script.getPath(), 'wb') as archivo:
                     for i in range(0, size_file):
-                        archivo.write(b'\x00' * 1024)   
-                #escribir en archivo
-                with open(disk.getPath(), 'rb+') as archivo:
-                    archivo.write(disk.pack_data())
-                    archivo.close()
-                print('¡Disco creado!')
+                        archivo.write(b'\x00' * 1024)
+                #crear mbr
+                mbr = Mbr()
+                mbr.setTamano(script.getSize())
+                mbr.setFecha_creacion(datetime.now())
+                mbr.setDsk_signature(generarCodigo())
+                mbr.setFit('F')
+                #escribir mbr
+                with open(script.getPath(), 'rb+') as archivo:
+                    archivo.write(mbr.pack_data())
+                #escribir particiones
+                pos = 21
+                for particion in mbr.getPartitions():
+                    with open(script.getPath(), 'rb+') as archivo:
+                        archivo.seek(pos)
+                        archivo.write(particion.pack_data())
+                    pos += 28
+                print('¡Disco creado exitosamente!')
             else: 
-                print('No se pudo crear el disco.')
+                print('¡Error! no se pudo crear el disco.')
         else:
             print("¡Error! parametro no valido.")
         return None
     #COMANDO RMDISK
     elif (comando == "rmdisk"):
         if (parametro == 'path'):      
-            disk.setPath(valor)
+            script.setPath(valor)
         elif (parametro == 'ejecutar'):
-            if (disk.errors == 0):
-                disk.deleteDisk()
-                '''
-                #leer archivo
-                disco = Mkdisk()
-                with open(disk.getPath(), 'rb+') as archivo:
-                    archivo.seek(0)
-                    contenido = archivo.read(disco.getLength())
-                    archivo.close()
-                disco = disco.unpack_data(contenido)
-                print("size: ", disco.getSize())
-                print("path: ", disco.getPath())
-                print("fit: ", disco.getFit())
-                print("unit: ", disco.getUnit())
-                '''
+            if (script.errors == 0):
+                script.deleteDisk()
             else: 
-                print('No se pudo eliminar el disco.')
+                print('¡Error! no se pudo eliminar el disco.')
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO FDISK
     elif (comando == 'fdisk'):
-        ruta_disco = "lo hice solo para arreglar el error"
         if (parametro == 'size'):
-            if (int(valor) > 0):
-                disk.size = int(valor)
-            else:
-                print("¡Ocurrio un error al asignar valor al parametro 'size'.\nEl valor debe ser mayor a 0.")
+            script.setSize(int(valor))
         elif (parametro == 'path'):
-            disk.path = valor
+            script.setPath(valor)
         elif (parametro == 'name'):
-            disk.name = valor
+            script.setName(valor)
         elif (parametro == 'unit'):
-            disk.unit = valor
+            script.setUnit(valor)
+        elif(parametro == 'type'):
+            script.setType(valor)
+        elif(parametro == 'fit'):
+            script.setFit(valor)
         elif (parametro == 'ejecutar'):
-            mbr = Mkdisk()
-            with open(ruta_disco, 'rb+') as archivo:
+            #obtener mbr
+            mbr = Mbr()
+            with open(script.getPath(), 'rb+') as archivo:
                 archivo.seek(0)
                 contenido = archivo.read(mbr.getLength())
-                archivo.close()
             mbr = mbr.unpack_data(contenido)
-            partitionFree = mbr.getPartitionFree()
-            if partitionFree != None:
-                if (disk.getUnit() == 'M'):
-                    mbr.setSizePartition(partitionFree+(disk.getSize()*1024*1024))
-                elif (disk.getUnit() == 'K'):
-                    mbr.setSizePartition(partitionFree+(disk.getSize()*1024))
-                else:
-                    mbr.setSizePartition(partitionFree+disk.getSize())
-                #escribir en archivo mbr
-                with open(disk.getPath(), 'rb+') as archivo:
-                    archivo.write(mbr.pack_data())
-                    archivo.close()
-                #escribir en archivo particion
-                with open(disk.getPath(), 'rb+') as archivo:
-                    archivo.seek(partitionFree)
-                    archivo.write(disk.pack_data())
-                    archivo.close()
-                print('¡Particion creada exitosamente!')
-            else: 
-                print('Las 4 particiones permitidas, ya han sido usadas.')
+            #obtener particiones
+            pos = 21
+            for i in range(4):
+                particion = Partition()
+                with open(script.getPath(), 'rb+') as archivo:
+                    archivo.seek(pos)
+                    contenido = archivo.read(28)
+                particion = particion.unpack_data(contenido)
+                mbr.getPartitions()[i] = particion
+                pos += 28
+            #crear particion
+            nombre_existe = False
+            temp = 0
+            for partition in mbr.getPartitions():
+                if (partition.getPart_name() == script.getName()):
+                    nombre_existe = True
+                    break
+            if (nombre_existe) :
+                print("¡Error! el valor del parametro 'name' ya existe.")
+            else:
+                pos_en_disco = 21
+                pos_particion = None
+                if (mbr.getFit() == 'BF'):
+                    diferencia_minima = float('inf')
+                    for i, partition in enumerate(mbr.getPartitions()):
+                        if (partition.getPart_status == "I"):
+                            diferencia = partition.getPart_s() - script.getSize()
+                            if diferencia >= 0 and diferencia < diferencia_minima:
+                                pos_particion = i
+                                diferencia_minima = diferencia
+                        else:
+                            pos_en_disco += partition.getPart_s()
+                elif (mbr.getFit() == 'FF'):
+                    for i, partition in enumerate(mbr.getPartitions()):
+                        if (partition.getPart_status() == "I"):
+                            if partition.getPart_s() >= script.getSize():
+                                pos_particion = i
+                        else:
+                            pos_en_disco += partition.getPart_s()
+                elif (mbr.getFit() == 'WF'):
+                    for i, partition in enumerate(mbr.getPartitions()):
+                        if (partition.getPart_status() == "I"):
+                            if (partition.getPart_s() >= script.getSize() and partition.getPart_s() >= temp):
+                                pos_particion = i
+                                temp = partition.getPart_s()
+                        else:
+                            pos_en_disco += partition.getPart_s()
+                if (pos_particion == None):
+                    for i, partition in enumerate(mbr.getPartitions()):
+                        if (partition.getPart_status() == "I"):
+                            if (partition.getPart_s() == 0):
+                                pos_particion = i
+                                break                           
+                        else:
+                            pos_en_disco += partition.getPart_s()
+
+                
+                if (pos_particion != None):
+                    mbr.getPartitions()[pos_particion].setPart_status("A")
+                    #mbr.getPartitions()[pos_particion].setPart_type(disk.getType())
+                    mbr.getPartitions()[pos_particion].setPart_type('P')
+                    #mbr.getPartitions()[pos_particion].setPart_fit(disk.getFit())
+                    mbr.getPartitions()[pos_particion].setPart_fit("B")
+                    #print(mbr.getPartitions()[pos_particion].getPart_fit())
+                    mbr.getPartitions()[pos_particion].setPart_start(pos_en_disco)
+                    if (script.unit == "M"):
+                        mbr.getPartitions()[pos_particion].setPart_s(script.getSize()*1024*1024)
+                    elif (script.unit == "K"):
+                        mbr.getPartitions()[pos_particion].setPart_s(script.getSize()*1024)
+                    else:
+                        mbr.getPartitions()[pos_particion].setPart_s(script.getSize())
+                    mbr.getPartitions()[pos_particion].setPart_name(script.getName())
+                    #escribir mbr
+                    with open(script.getPath(), 'rb+') as archivo:
+                        archivo.write(mbr.pack_data())
+                    #escribir particiones
+                    pos = 21
+                    for particion in mbr.getPartitions():
+                        with open(script.getPath(), 'rb+') as archivo:
+                            archivo.seek(pos)
+                            archivo.write(particion.pack_data())
+                            pos += 28
+                    print('¡Particion creada exitosamente!')
+                else: 
+                    print('Las 4 particiones permitidas, ya han sido usadas.')
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -123,13 +198,15 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMANDO UNMOUNT
     elif (comando == 'unmount'):
         if (parametro == 'id'):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMANDO MKFS
     elif (comando == 'mkfs'):
         if (parametro == 'id'):
             pass
@@ -139,20 +216,49 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMANDO LOGIN
     elif (comando == 'login'):
         if (parametro == 'user'):
-            pass
+            script.setUser(valor)
         elif (parametro == 'pass'):
-            pass
+            script.setPassword(valor)
         elif (parametro == 'id'):
-            pass
+            script.setId(valor)
+        elif(parametro == 'ejecutar'):
+            usuario_existe = False
+            contraseña_correcta = False
+            #leer archivo users.txt
+            with open("users.txt", "r") as f:
+                lineas = f.readlines()
+            for linea in lineas:
+                usuario_grupo = linea.strip().split(", ")
+                if (usuario_grupo[1] == "U"):
+                    if (script.getUser() in usuario_grupo):
+                        usuario_existe = True
+                        if (script.getPassword() in usuario_grupo):
+                            contraseña_correcta = True
+                        break
+            if (usuario_existe):
+                if (contraseña_correcta):
+                    print(f"¡Bienvenido {script.getUser()}!")
+                    usuario_actual = script.getUser()
+                else:
+                    print("¡Contraseña incorrecta!")
+            else:
+                print("¡Usuario no existe!")          
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMANDO LOGOUT
     elif (comando == 'logout'):
-        print("Cierra Sesion")
-
+        if (parametro == "ejecutar"):
+            if (usuario_actual != ""):
+                usuario_actual = ""
+            else:
+                print("¡Error! No existe una sesion activa.")
+        return None
+    #COMANDO MKGRP
     elif (comando == 'mkgrp'):
         if (parametro == 'name'):
             pass
@@ -286,6 +392,51 @@ def comando_ejecutar(parametro, valor):
             tecla = input("Presione 'ENTER' para continuar ")
             if (tecla == ""):
                 break
+    #COMANDO EXECUTE
+    elif (comando == 'execute'):
+        if (parametro == "path"):
+            if os.path.exists(valor):
+                archivo = open(valor, "r")
+                contenido = archivo.read()
+                return contenido
+            else:
+                print("¡Error! archivo no encontrado.")
+        return None
+    #COMANDO REP
+    elif (comando == "rep"):
+        if (parametro == "path"):
+            #obtener mbr
+            mbr = Mbr()
+            with open(valor, 'rb+') as archivo:
+                archivo.seek(0)
+                contenido = archivo.read(mbr.getLength())
+            mbr = mbr.unpack_data(contenido)
+            #obtener particiones
+            pos = 21
+            for i in range(4):
+                particion = Partition()
+                with open(valor, 'rb+') as archivo:
+                    archivo.seek(pos)
+                    contenido = archivo.read(28)
+                particion = particion.unpack_data(contenido)
+                mbr.getPartitions()[i] = particion
+                pos += 28
+            #imprimir particiones
+            print("mbr_tamaño: ", mbr.getTamano())
+            print("mbr_fecha_creacion: ", mbr.getFecha_creacion())
+            print("mbr_dsk_signature: ", mbr.getDsk_signature())
+            print("mbr_ajuste: ", mbr.getFit())
+            for partition in mbr.getPartitions():
+                print(partition.getPart_status())
+                print(partition.getPart_type())
+                print(partition.getPart_fit())
+                print(partition.getPart_start())
+                print(partition.getPart_s())
+                print(partition.getPart_name())
+
+        return None
+
+        
 '''
 def comando_ejecutar(parametro, valor):
     global comando
@@ -339,3 +490,8 @@ def comando_ejecutar(parametro, valor):
             posicion += propiedades.getSize()
         return ""
 '''
+
+def generarCodigo():
+    code = list(range(1001, 1030))
+    random.shuffle(code)
+    return code.pop()

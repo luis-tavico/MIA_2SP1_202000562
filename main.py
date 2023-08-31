@@ -1,10 +1,10 @@
 from analizador.gramatica import analizador
 
 if __name__ == '__main__':
-    #mkdisk >size=1 >unit=K >path=/home/luis_tavico/Escritorio/Disco1.dsk
-    #fdisk >path=/home/luis_tavico/Escritorio/Disco1.dsk >unit=B >name=Particion4 >size=150
-    #fdisk >path=/home/luis_tavico/Escritorio/Disco1.dsk >unit=B >name=Particion5 >size=200
-    #execute >path=/home/luis_tavico/Escritorio/prueba.eea
+    #execute -path=/home/luis_tavico/Escritorio/prueba.eea
+    #rep -path=/home/luis_tavico/Escritorio/Disco1.dsk
+    #fdisk -path=/home/luis_tavico/Escritorio/Disco1.dsk -name=Part1 -unit=B -size=200
+    #fdisk -path=/home/luis_tavico/Escritorio/Disco1.dsk -name=Part2 -unit=B -size=150
     while True:
         entrada = input("App> ")
         waiting_scripts = analizador(entrada)

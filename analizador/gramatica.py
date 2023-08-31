@@ -1,6 +1,6 @@
-import ply.lex as lex
-import ply.yacc as yacc
-from scripts import *
+import analizador.ply.lex as lex
+import analizador.ply.yacc as yacc
+from analizador.scripts import *
 
 errors = []
 
@@ -8,15 +8,28 @@ reserved_words = {
     #Comandos
     'mkdisk': 'MKDISK',
     'rmdisk': 'RMDISK',
-    'fdisk' : 'FKDISK',
+    'fdisk' : 'FDISK',
+    'login' : 'LOGIN',
+    'logout' : 'LOGOUT',
+    'mkgrp' : 'MKGRP',
+    'rmgrp' : 'RMGRP',
+    'mkusr' : 'MKUSR',
+    'rmusr' : 'RMUSR',
     'pause' : 'PAUSE',
     'execute' : 'EXECUTE',
+    'rep': 'REP',
     #Parametros
     'size': 'SIZE',
     'path': 'PATH',
     'fit': 'FIT',
     'unit': 'UNIT',
+    'name' : 'NAME',
+    'user': 'USER',
+    'pass': 'PASS',
+    'id': 'ID',
+    'grp' : 'GRP',
     #Valores
+    'full' : 'FULL'
 }
 
 tokens = [
@@ -50,6 +63,11 @@ def t_UNIDAD(t):
     r'B|K|M'
     return t
 
+def t_CADENA(t):
+    r'[a-zA-z_0-9][a-zA-z_0-9]*'
+    t.type = reserved_words.get(t.value, 'CADENA')
+    return t
+
 def t_ENTERO(t):
     r'\d+'
     try:
@@ -57,11 +75,6 @@ def t_ENTERO(t):
     except ValueError:
         print(f"Error al convertir {t.value} a entero")
         t.value = 0
-    return t
-
-def t_CADENA(t):
-    r'[a-zA-z_][a-zA-z_0-9]*'
-    t.type = reserved_words.get(t.value, 'CADENA')
     return t
 
 def t_COMENTARIO(t):
@@ -95,13 +108,22 @@ def p_instrucciones(t):
 def p_instruccion(t):
     '''instruccion : comando declaraciones
                    | comando '''
-    comando_ejecutar("ejecutar", None)
+    global waiting_scripts
+    waiting_scripts = comando_ejecutar("ejecutar", None)
 
 def p_comando(t):
     '''comando : MKDISK
                | RMDISK
                | FDISK
-               | PAUSE'''
+               | LOGIN
+               | LOGOUT
+               | MKGRP
+               | RMGRP
+               | MKUSR
+               | RMUSR
+               | PAUSE
+               | EXECUTE
+               | REP'''
     comando_activar(str(t[1]))
     
 def p_declaraciones(t):
@@ -109,7 +131,7 @@ def p_declaraciones(t):
                      | declaracion '''
 
 def p_declaracion(t):
-    'declaracion : MAYORQUE parametro IGUAL valor'
+    'declaracion : GUION parametro IGUAL valor'
     global waiting_scripts
     waiting_scripts = comando_ejecutar(str(t[2]), str(t[4]))
 
@@ -118,7 +140,11 @@ def p_parametro(t):
                  | PATH
                  | FIT
                  | UNIT
-                 | NAME '''
+                 | NAME 
+                 | USER
+                 | PASS
+                 | ID
+                 | GRP'''
     t[0] = t[1]
 
 def p_valor(t):

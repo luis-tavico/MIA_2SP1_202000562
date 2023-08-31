@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'AJUSTE CADENA ENTERO FIT GUION IGUAL MKDISK PATH PAUSE RMDISK RUTA SIZE UNIDAD UNITinstrucciones    : instruccion instrucciones\n                        | instruccion instruccion : comando declaraciones\n                   | comando  comando : MKDISK\n               | RMDISK\n               | PAUSE declaraciones : declaracion declaraciones\n                     | declaracion declaracion : GUION parametro IGUAL valorparametro : SIZE\n                 | PATH\n                 | FIT\n                 | UNIT valor : ENTERO\n             | RUTA\n             | AJUSTE\n             | UNIDAD '
+_lr_signature = 'AJUSTE CADENA ENTERO EXECUTE FDISK FIT FULL GRP GUION ID IGUAL LOGIN LOGOUT MKDISK MKGRP MKUSR NAME PASS PATH PAUSE REP RMDISK RMGRP RMUSR RUTA_ARCHIVO RUTA_DISCO SIZE UNIDAD UNIT USERinstrucciones    : instruccion instrucciones\n                        | instruccion instruccion : comando declaraciones\n                   | comando comando : MKDISK\n               | RMDISK\n               | FDISK\n               | LOGIN\n               | LOGOUT\n               | MKGRP\n               | RMGRP\n               | MKUSR\n               | RMUSR\n               | PAUSE\n               | EXECUTE\n               | REPdeclaraciones : declaracion declaraciones\n                     | declaracion declaracion : GUION parametro IGUAL valorparametro : SIZE\n                 | PATH\n                 | FIT\n                 | UNIT\n                 | NAME \n                 | USER\n                 | PASS\n                 | ID\n                 | GRPvalor : ENTERO\n             | RUTA_ARCHIVO\n             | RUTA_DISCO\n             | AJUSTE\n             | UNIDAD\n             | CADENA '
     
-_lr_action_items = {'MKDISK':([0,2,3,4,5,6,8,9,11,18,19,20,21,22,],[4,4,-4,-5,-6,-7,-3,-9,-8,-10,-15,-16,-17,-18,]),'RMDISK':([0,2,3,4,5,6,8,9,11,18,19,20,21,22,],[5,5,-4,-5,-6,-7,-3,-9,-8,-10,-15,-16,-17,-18,]),'PAUSE':([0,2,3,4,5,6,8,9,11,18,19,20,21,22,],[6,6,-4,-5,-6,-7,-3,-9,-8,-10,-15,-16,-17,-18,]),'$end':([1,2,3,4,5,6,7,8,9,11,18,19,20,21,22,],[0,-2,-4,-5,-6,-7,-1,-3,-9,-8,-10,-15,-16,-17,-18,]),'GUION':([3,4,5,6,9,18,19,20,21,22,],[10,-5,-6,-7,10,-10,-15,-16,-17,-18,]),'SIZE':([10,],[13,]),'PATH':([10,],[14,]),'FIT':([10,],[15,]),'UNIT':([10,],[16,]),'IGUAL':([12,13,14,15,16,],[17,-11,-12,-13,-14,]),'ENTERO':([17,],[19,]),'RUTA':([17,],[20,]),'AJUSTE':([17,],[21,]),'UNIDAD':([17,],[22,]),}
+_lr_action_items = {'MKDISK':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[4,4,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'RMDISK':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[5,5,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'FDISK':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[6,6,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'LOGIN':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[7,7,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'LOGOUT':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[8,8,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'MKGRP':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[9,9,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'RMGRP':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[10,10,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'MKUSR':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[11,11,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'RMUSR':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[12,12,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'PAUSE':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[13,13,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'EXECUTE':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[14,14,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'REP':([0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,20,32,33,34,35,36,37,38,],[15,15,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'$end':([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,20,32,33,34,35,36,37,38,],[0,-2,-4,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,-1,-3,-18,-17,-19,-29,-30,-31,-32,-33,-34,]),'GUION':([3,4,5,6,7,8,9,10,11,12,13,14,15,18,32,33,34,35,36,37,38,],[19,-5,-6,-7,-8,-9,-10,-11,-12,-13,-14,-15,-16,19,-19,-29,-30,-31,-32,-33,-34,]),'SIZE':([19,],[22,]),'PATH':([19,],[23,]),'FIT':([19,],[24,]),'UNIT':([19,],[25,]),'NAME':([19,],[26,]),'USER':([19,],[27,]),'PASS':([19,],[28,]),'ID':([19,],[29,]),'GRP':([19,],[30,]),'IGUAL':([21,22,23,24,25,26,27,28,29,30,],[31,-20,-21,-22,-23,-24,-25,-26,-27,-28,]),'ENTERO':([31,],[33,]),'RUTA_ARCHIVO':([31,],[34,]),'RUTA_DISCO':([31,],[35,]),'AJUSTE':([31,],[36,]),'UNIDAD':([31,],[37,]),'CADENA':([31,],[38,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'instrucciones':([0,2,],[1,7,]),'instruccion':([0,2,],[2,2,]),'comando':([0,2,],[3,3,]),'declaraciones':([3,9,],[8,11,]),'declaracion':([3,9,],[9,9,]),'parametro':([10,],[12,]),'valor':([17,],[18,]),}
+_lr_goto_items = {'instrucciones':([0,2,],[1,16,]),'instruccion':([0,2,],[2,2,]),'comando':([0,2,],[3,3,]),'declaraciones':([3,18,],[17,20,]),'declaracion':([3,18,],[18,18,]),'parametro':([19,],[21,]),'valor':([31,],[32,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,22 +27,38 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> instrucciones","S'",1,None,None,None),
-  ('instrucciones -> instruccion instrucciones','instrucciones',2,'p_instrucciones_lista','gramatica.py',73),
-  ('instrucciones -> instruccion','instrucciones',1,'p_instrucciones_lista','gramatica.py',74),
-  ('instruccion -> comando declaraciones','instruccion',2,'p_instrucciones_evaluar','gramatica.py',77),
-  ('instruccion -> comando','instruccion',1,'p_instrucciones_evaluar','gramatica.py',78),
-  ('comando -> MKDISK','comando',1,'p_comando','gramatica.py',82),
-  ('comando -> RMDISK','comando',1,'p_comando','gramatica.py',83),
-  ('comando -> PAUSE','comando',1,'p_comando','gramatica.py',84),
-  ('declaraciones -> declaracion declaraciones','declaraciones',2,'p_declaraciones','gramatica.py',88),
-  ('declaraciones -> declaracion','declaraciones',1,'p_declaraciones','gramatica.py',89),
-  ('declaracion -> GUION parametro IGUAL valor','declaracion',4,'p_declaracion','gramatica.py',92),
-  ('parametro -> SIZE','parametro',1,'p_parametro','gramatica.py',96),
-  ('parametro -> PATH','parametro',1,'p_parametro','gramatica.py',97),
-  ('parametro -> FIT','parametro',1,'p_parametro','gramatica.py',98),
-  ('parametro -> UNIT','parametro',1,'p_parametro','gramatica.py',99),
-  ('valor -> ENTERO','valor',1,'p_valor','gramatica.py',103),
-  ('valor -> RUTA','valor',1,'p_valor','gramatica.py',104),
-  ('valor -> AJUSTE','valor',1,'p_valor','gramatica.py',105),
-  ('valor -> UNIDAD','valor',1,'p_valor','gramatica.py',106),
+  ('instrucciones -> instruccion instrucciones','instrucciones',2,'p_instrucciones','gramatica.py',103),
+  ('instrucciones -> instruccion','instrucciones',1,'p_instrucciones','gramatica.py',104),
+  ('instruccion -> comando declaraciones','instruccion',2,'p_instruccion','gramatica.py',109),
+  ('instruccion -> comando','instruccion',1,'p_instruccion','gramatica.py',110),
+  ('comando -> MKDISK','comando',1,'p_comando','gramatica.py',114),
+  ('comando -> RMDISK','comando',1,'p_comando','gramatica.py',115),
+  ('comando -> FDISK','comando',1,'p_comando','gramatica.py',116),
+  ('comando -> LOGIN','comando',1,'p_comando','gramatica.py',117),
+  ('comando -> LOGOUT','comando',1,'p_comando','gramatica.py',118),
+  ('comando -> MKGRP','comando',1,'p_comando','gramatica.py',119),
+  ('comando -> RMGRP','comando',1,'p_comando','gramatica.py',120),
+  ('comando -> MKUSR','comando',1,'p_comando','gramatica.py',121),
+  ('comando -> RMUSR','comando',1,'p_comando','gramatica.py',122),
+  ('comando -> PAUSE','comando',1,'p_comando','gramatica.py',123),
+  ('comando -> EXECUTE','comando',1,'p_comando','gramatica.py',124),
+  ('comando -> REP','comando',1,'p_comando','gramatica.py',125),
+  ('declaraciones -> declaracion declaraciones','declaraciones',2,'p_declaraciones','gramatica.py',129),
+  ('declaraciones -> declaracion','declaraciones',1,'p_declaraciones','gramatica.py',130),
+  ('declaracion -> GUION parametro IGUAL valor','declaracion',4,'p_declaracion','gramatica.py',133),
+  ('parametro -> SIZE','parametro',1,'p_parametro','gramatica.py',138),
+  ('parametro -> PATH','parametro',1,'p_parametro','gramatica.py',139),
+  ('parametro -> FIT','parametro',1,'p_parametro','gramatica.py',140),
+  ('parametro -> UNIT','parametro',1,'p_parametro','gramatica.py',141),
+  ('parametro -> NAME','parametro',1,'p_parametro','gramatica.py',142),
+  ('parametro -> USER','parametro',1,'p_parametro','gramatica.py',143),
+  ('parametro -> PASS','parametro',1,'p_parametro','gramatica.py',144),
+  ('parametro -> ID','parametro',1,'p_parametro','gramatica.py',145),
+  ('parametro -> GRP','parametro',1,'p_parametro','gramatica.py',146),
+  ('valor -> ENTERO','valor',1,'p_valor','gramatica.py',150),
+  ('valor -> RUTA_ARCHIVO','valor',1,'p_valor','gramatica.py',151),
+  ('valor -> RUTA_DISCO','valor',1,'p_valor','gramatica.py',152),
+  ('valor -> AJUSTE','valor',1,'p_valor','gramatica.py',153),
+  ('valor -> UNIDAD','valor',1,'p_valor','gramatica.py',154),
+  ('valor -> CADENA','valor',1,'p_valor','gramatica.py',155),
 ]

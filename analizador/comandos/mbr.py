@@ -1,21 +1,25 @@
 import struct
+from datetime import datetime
 
-from partition import Partition 
+from analizador.comandos.partition import Partition 
 
 class Mbr:
-    def __init__(self, tamano = None, fecha_creacion = None, dsk_signature = None, fit = None):
+    def __init__(self, tamano = 0, fecha_creacion = 0, dsk_signature = 0, fit = "B"):
         self.tamano = tamano
         self.fecha_creacion = fecha_creacion
+        #self.fecha_creacion = int(round(fecha_creacion.timestamp()))
         self.dsk_signature = dsk_signature
         self.fit = fit
-        self.partitions = [Partition("A", "B", "C", 123, 123, "partition1"), Partition("D", "E", "F", 123, 123, "partition2"), Partition("G", "H", "I", 123, 123, "partition3"), Partition("J", "K", "L", 123, 123, "partition4")]
+        #self.partitions = [Partition("I", "P", "W", 0, 0, "partition1"), Partition("I", "P", "W", 0, 0, "partition2"), Partition("I", "P", "W", 0, 0, "partition3"), Partition("I", "P", "W", 0, 0, "partition4")]
+        self.partitions = [Partition(), Partition(), Partition(), Partition()]
+
 
     #SET
     def setTamano(self, tamano):
         self.tamano = tamano
 
     def setFecha_creacion(self, fecha_creacion):
-        self.fecha_creacion = fecha_creacion
+        self.fecha_creacion = int(round(fecha_creacion.timestamp()))
 
     def setDsk_signature(self, dsk_signature):
         self.dsk_signature = dsk_signature
@@ -28,7 +32,7 @@ class Mbr:
         return self.tamano
 
     def getFecha_creacion(self):
-        return self.fecha_creacion
+        return datetime.fromtimestamp(self.fecha_creacion)
 
     def getDsk_signature(self):
         return self.dsk_signature
@@ -40,19 +44,18 @@ class Mbr:
         return self.partitions
     
     #Empaquetar_Desempaquetar
-    
     def pack_data(self):
         return struct.pack('iqic', self.tamano, self.fecha_creacion, self.dsk_signature, self.fit.encode())
-
+    
     @classmethod
     def unpack_data(cls, data_bytes):
         tamano, fecha_creacion, dsk_signature, fit = struct.unpack('iqic', data_bytes)
         return cls(tamano, fecha_creacion, dsk_signature, fit.decode())
     
     def getLength(self):
-        return 17
+        return 21
 
-
+'''
 from datetime import datetime
 curr_dt = datetime.now()
 timestamp = int(round(curr_dt.timestamp()))
@@ -68,3 +71,4 @@ print(unpack)
 
 for partition in unpack.getPartitions():
     print(partition.getPart_name())
+'''
