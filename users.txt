@@ -1,2 +1,4 @@
-1, G, root 
-1, U, root, root, 123 
+1, G, root
+1, U, root, root, 123
+0, G, usuarios
+0, U, usuarios, user1, usuario

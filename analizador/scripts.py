@@ -1,12 +1,18 @@
 import os
 import random
 from datetime import datetime
+from analizador.comandos.cat import Cat
 from analizador.comandos.login import Login
 from analizador.comandos.mkdisk import Mkdisk
 from analizador.comandos.mbr import Mbr
+from analizador.comandos.mkfile import Mkfile
+from analizador.comandos.mkgrp import Mkgrp
+from analizador.comandos.mkusr import Mkusr
 from analizador.comandos.partition import Partition
 from analizador.comandos.rmdisk import Rmdisk
 from analizador.comandos.fdisk import Fdisk
+from analizador.comandos.rmgrp import Rmgrp
+from analizador.comandos.rmusr import Rmusr
 
 global comando, script, usuario_actual
 usuario_actual = ""
@@ -15,16 +21,29 @@ def comando_activar(valor):
     global comando, script
     comando = valor
 
-    if (comando == "mkdisk"):
+    if (comando.lower() == "mkdisk"):
         script = Mkdisk()
-    elif (comando == "rmdisk"):
+    elif (comando.lower() == "rmdisk"):
         script = Rmdisk()
-    elif (comando == "fdisk"):
+    elif (comando.lower() == "fdisk"):
         script = Fdisk()
-    elif (comando == "login"):
+    elif (comando.lower() == "login"):
         script = Login()
-    elif (comando == "logout"):
+    elif (comando.lower() == "logout"):
         pass
+    elif (comando.lower() == "mkgrp"):
+        script = Mkgrp()
+    elif (comando.lower() == "rmgrp"):
+        script = Rmgrp()
+    elif (comando.lower() == "mkusr"):
+        script = Mkusr()
+    elif (comando.lower() == "rmusr"):
+        script = Rmusr()
+    elif (comando.lower() == "mkfile"):
+        script = Mkfile()
+    elif (comando.lower() == "cat"):
+        script = Cat()
+
 
 def comando_ejecutar(parametro, valor):
     global comando, script, usuario_actual
@@ -252,7 +271,7 @@ def comando_ejecutar(parametro, valor):
         return None
     #COMANDO LOGOUT
     elif (comando == 'logout'):
-        if (parametro == "ejecutar"):
+        if (parametro == 'ejecutar'):
             if (usuario_actual != ""):
                 usuario_actual = ""
             else:
@@ -261,32 +280,132 @@ def comando_ejecutar(parametro, valor):
     #COMANDO MKGRP
     elif (comando == 'mkgrp'):
         if (parametro == 'name'):
-            pass
+            script.setName(valor)
+        elif (parametro == 'ejecutar'):
+            num = 1
+            grupo_existe = False
+            #leer archivo users.txt
+            with open("users.txt", "r") as archivo:
+                lineas = archivo.readlines()
+            for linea in lineas:
+                usuario_grupo = linea.strip().split(", ")
+                if (usuario_grupo[1] == "G"):
+                    if (script.getName() in usuario_grupo):
+                        grupo_existe = True
+                        break
+                    else:
+                        num += 1
+            if (not grupo_existe):
+                #editar archivo
+                with open("users.txt", 'a') as archivo:
+                    archivo.write(str(num) + ", G, " + script.getName() + "\n")
+                print("¡Grupo creado exitosamente!")
+            else:
+                print("¡Error! el grupo a crear ya existe.")
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMANDO RMGRP
     elif (comando == 'rmgrp'):
         if (parametro == 'name'):
-            pass
+            script.setName(valor)
+        elif (parametro == 'ejecutar'):
+            cont_editado = ""
+            grupo_existe = False
+            pos = None
+            #leer archivo users.txt
+            with open("users.txt", "r") as archivo:
+                lineas = archivo.readlines()
+            for i, linea in enumerate(lineas):
+                usuario_grupo = linea.strip().split(", ")
+                if (usuario_grupo[1] == "G"):
+                    if (script.getName() in usuario_grupo):
+                        cont_editado = "0, " + usuario_grupo[1] + ", " + usuario_grupo[2] + "\n"
+                        grupo_existe = True
+                        pos = i
+                        break
+            if (grupo_existe):
+                lineas[pos] = cont_editado
+                #escribir las líneas de nuevo en el archivo
+                with open("users.txt", 'w') as archivo:
+                    archivo.writelines(lineas)
+                print("¡Grupo eliminado exitosamente!")
+            else:
+                print("¡Error! el grupo a eliminar no existe")
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMAND MKUSR
     elif (comando == 'mkusr'):
         if (parametro == 'user'):
-            pass
+            script.setUser(valor)
         elif (parametro == 'pass'):
-            pass
+            script.setPassword(valor)
         elif (parametro == 'grp'):
-            pass
+            script.setGrp(valor)
+        elif (parametro == 'ejecutar'):
+            if (script.errors == 0):
+                usuario_existe = False
+                grupo_existe = False
+                pos = None
+                #leer archivo users.txt
+                with open("users.txt", "r") as archivo:
+                    lineas = archivo.readlines()
+                for i, linea in enumerate(lineas):
+                    usuario_grupo = linea.strip().split(", ")
+                    if (usuario_grupo[1] == "U"):
+                        if (script.getUser() in usuario_grupo):
+                            usuario_existe = True
+                    elif (usuario_grupo[1] == "G"):
+                        if (script.getGrp() == usuario_grupo[2]):
+                            grupo_existe = True
+                            pos = usuario_grupo[0]
+                if (grupo_existe):
+                    if (not usuario_existe):
+                        #editar archivo
+                        with open("users.txt", 'a') as archivo:
+                            archivo.write(pos + ", U, " + script.getGrp() + ", " + script.getUser() + ", " + script.getPassword() + "\n")
+                        print("¡Usuario creado exitosamente!")
+                    else:
+                        print("¡Error! el usuario a crear ya existe.")
+                else:
+                    print("¡Error! el grupo no existe.")
+            else:
+                print('¡Error! no se pudo crear el usuario.')
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMANDO RMUSR
     elif (comando == 'rmusr'):
         if (parametro == 'user'):
-            pass
+            script.setUser(valor)
+        elif (parametro == 'ejecutar'):
+            cont_editado = ""
+            usuario_existe = False
+            pos = None
+            #leer archivo users.txt
+            with open("users.txt", "r") as archivo:
+                lineas = archivo.readlines()
+            for i, linea in enumerate(lineas):
+                usuario_grupo = linea.strip().split(", ")
+                if (usuario_grupo[1] == "U"):
+                    if (script.getUser() in usuario_grupo):
+                        cont_editado = "0, " + "U, " + usuario_grupo[2] + ", " + usuario_grupo[3] + ", " + usuario_grupo[4] + "\n"
+                        usuario_existe = True
+                        pos = i
+                        break
+            if (usuario_existe):
+                lineas[pos] = cont_editado
+                #escribir las líneas de nuevo en el archivo
+                with open("users.txt", 'w') as archivo:
+                    archivo.writelines(lineas)
+                print("¡Usuario eliminado exitosamente!")
+            else:
+                print("¡Error! el usuario a eliminar no existe")
         else:
             print("¡Error! parametro no valido.")
-
+        return None
+    #COMANDO MKFILE
     elif (comando == 'mkfile'):
         if (parametro == 'path'):
             pass
@@ -298,19 +417,19 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO CAT
     elif (comando == 'cat'):
         if (parametro == 'filen'):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO REMOVE
     elif (comando == 'remove'):
         if (parametro == 'path'):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO EDIT
     elif (comando == 'edit'):
         if (parametro == 'path'):
             pass
@@ -318,7 +437,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-    
+    #COMANDO RENAME
     elif (comando == 'rename'):
         if (parametro == 'path'):
             pass
@@ -326,7 +445,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO MKDIR
     elif (comando == 'mkdir'):
         if (parametro == 'path'):
             pass
@@ -334,7 +453,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO COPY
     elif (comando == 'copy'):
         if (parametro == 'path'):
             pass
@@ -342,7 +461,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO MOVE
     elif (comando == 'move'):
         if (parametro == 'path'):
             pass
@@ -350,7 +469,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO FIND
     elif (comando == 'find'):
         if (parametro == 'path'):
             pass
@@ -358,7 +477,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO CHOWN
     elif (comando == 'chown'):
         if (parametro == 'path'):
             pass
@@ -368,7 +487,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO CHGRP
     elif (comando == 'chgrp'):
         if (parametro == 'user'):
             pass
@@ -376,7 +495,7 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO CHMOD
     elif (comando == 'chmod'):
         if (parametro == 'path'):
             pass
@@ -386,12 +505,13 @@ def comando_ejecutar(parametro, valor):
             pass
         else:
             print("¡Error! parametro no valido.")
-
+    #COMANDO PAUSE
     elif (comando == 'pause'):
         while True: 
             tecla = input("Presione 'ENTER' para continuar ")
             if (tecla == ""):
                 break
+        return None
     #COMANDO EXECUTE
     elif (comando == 'execute'):
         if (parametro == "path"):
@@ -436,61 +556,7 @@ def comando_ejecutar(parametro, valor):
 
         return None
 
-        
-'''
-def comando_ejecutar(parametro, valor):
-    global comando
-    global nombre_archivo
-    global numero
-    if (comando == "execute"):
-        if (parametro == "path"):
-            archivo = open(valor, "r")
-            contenido = archivo.read()
-            return contenido
-    elif (comando == "mkdisk"):
-        #crear un arhivo vacio
-        kilobytes = 5120 # 5MB = 5120KB
-        size_kilobyte = 1024
-        if (os.path.exists('disk'+str(numero)+'.dsk')):
-            numero += 1
-        nombre_archivo = 'disk' + str(numero) + '.dsk'
-        with open(nombre_archivo, 'wb') as archivo:
-            for i in range(0, kilobytes):
-                archivo.write(b'\x00' * size_kilobyte)
-        size_bytes = 1000000 * (kilobytes/size_kilobyte)
-        #crear propiedades
-        propiedades = Propiedades()
-        propiedades.setAsignature()
-        propiedades.setTamano(size_bytes)
-        propiedades.setFecha()
-        #escribir en archivo
-        with open(nombre_archivo, 'rb+') as archivo:
-            archivo.write(propiedades.pack_data())
-            archivo.close() 
-        return ""
-    elif (comando == "rep"):
-        posicion = 0
-        while True:
-            #leer archivo
-            with open(nombre_archivo, 'rb+') as archivo:
-                archivo.seek(posicion)
-                contenido = archivo.read(1)
-                archivo.close()
-            if (contenido == b'\x00') : break
-            propiedades = Propiedades()
-            #leer archivo
-            with open(nombre_archivo, 'rb+') as archivo:
-                archivo.seek(posicion)
-                contenido = archivo.read(propiedades.getSize())
-                archivo.close()
-            propiedades = propiedades.unpack_data(contenido)
-            print("mbr_dsk_signature: ", propiedades.mbr_dsk_signature)
-            print("mbr_tamaño: ", propiedades.mbr_tamano)
-            print("mbr_fecha_creacion: ", propiedades.mbr_fecha_creacion)
-            posicion += propiedades.getSize()
-        return ""
-'''
-
+#FUNCIONES
 def generarCodigo():
     code = list(range(1001, 1030))
     random.shuffle(code)

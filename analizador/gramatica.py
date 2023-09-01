@@ -9,12 +9,27 @@ reserved_words = {
     'mkdisk': 'MKDISK',
     'rmdisk': 'RMDISK',
     'fdisk' : 'FDISK',
+    'mount' : 'MOUNT',
+    'unmount' : 'UNMOUNT',
+    'mkfs' : 'MKFS',
     'login' : 'LOGIN',
     'logout' : 'LOGOUT',
     'mkgrp' : 'MKGRP',
     'rmgrp' : 'RMGRP',
     'mkusr' : 'MKUSR',
     'rmusr' : 'RMUSR',
+    'mkfile' : 'MKFILE',
+    'cat' : 'CAT',
+    'remove' : 'REMOVE',
+    'edit' : 'EDIT',
+    'rename' : 'RENAME',
+    'mkdir' : 'MKDIR',
+    'copy' : 'COPY',
+    'move' : 'MOVE',
+    'find' : 'FIND',
+    'chown' : 'CHOWN',
+    'chgrp' : 'CHGRP',
+    'chmod' : 'CHMOD',
     'pause' : 'PAUSE',
     'execute' : 'EXECUTE',
     'rep': 'REP',
@@ -28,6 +43,10 @@ reserved_words = {
     'pass': 'PASS',
     'id': 'ID',
     'grp' : 'GRP',
+    'r' : 'R',
+    'cont' : 'CONT',
+    'destino' : 'DESTINO',
+    'ugo' : 'UGO',
     #Valores
     'full' : 'FULL'
 }
@@ -40,7 +59,8 @@ tokens = [
     'AJUSTE',
     'UNIDAD',
     'ENTERO',
-    'CADENA'
+    'CADENA',
+    'FILEN'
 ] + list(reserved_words.values())
 
 t_ignore = ' \t'
@@ -61,6 +81,10 @@ def t_AJUSTE(t):
 
 def t_UNIDAD(t):
     r'B|K|M'
+    return t
+
+def t_FILEN(t):
+    r'file[0-9][0-9]*'
     return t
 
 def t_CADENA(t):
@@ -115,12 +139,27 @@ def p_comando(t):
     '''comando : MKDISK
                | RMDISK
                | FDISK
+               | MOUNT
+               | UNMOUNT
+               | MKFS
                | LOGIN
                | LOGOUT
                | MKGRP
                | RMGRP
                | MKUSR
                | RMUSR
+               | MKFILE
+               | CAT
+               | REMOVE
+               | EDIT
+               | RENAME
+               | MKDIR
+               | COPY
+               | MOVE
+               | FIND
+               | CHOWN
+               | CHGRP
+               | CHMOD
                | PAUSE
                | EXECUTE
                | REP'''
@@ -144,7 +183,12 @@ def p_parametro(t):
                  | USER
                  | PASS
                  | ID
-                 | GRP'''
+                 | GRP
+                 | R
+                 | CONT
+                 | FILEN
+                 | DESTINO
+                 | UGO'''
     t[0] = t[1]
 
 def p_valor(t):

@@ -1,4 +1,4 @@
-lista = ['part_status', 'part_fit', 'part_start', 'part_s', 'part_next', 'part_name']
+lista = ['path', 'ugo', 'r']
 
 print('    #SET')
 for palabra in lista:
