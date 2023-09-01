@@ -7,7 +7,7 @@ class Mkfile:
 
     #SET
     def setPath(self, path):
-        self.path = path.replace("user", "luis_tavico")
+        self.path = path.replace("user", "luis_tavico").replace('"', "")
 
     def setR(self, r):
         self.r = r

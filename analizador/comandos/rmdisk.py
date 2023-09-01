@@ -7,9 +7,8 @@ class Rmdisk:
         self.errors = 0
     
     def setPath(self, path):
-        if (os.path.exists(path)):
-            self.path = path
-        else:
+        self.path = path.replace("user", "luis_tavico").replace('"', "")
+        if (not os.path.exists(self.path)):
             print("¡Error! el disco no existe.")
             self.errors += 1
 

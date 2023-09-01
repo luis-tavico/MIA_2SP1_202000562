@@ -5,10 +5,10 @@ class Edit:
 
     #SET
     def setPath(self, path):
-        self.path = path.replace("user", "luis_tavico")
+        self.path = path.replace("user", "luis_tavico").replace('"', "")
 
     def setCont(self, cont):
-        self.cont = cont.replace("user", "luis_tavico")
+        self.cont = cont.replace("user", "luis_tavico").replace('"', "")
 
     #GET
     def getPath(self):

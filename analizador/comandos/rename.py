@@ -5,7 +5,7 @@ class Rename:
 
     #SET
     def setPath(self, path):
-        self.path = path
+        self.path = path.replace("user", "luis_tavico").replace('"', "")
 
     def setName(self, name):
         self.name = name

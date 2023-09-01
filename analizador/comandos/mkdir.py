@@ -5,7 +5,7 @@ class Mkdir:
 
     #SET
     def setPath(self, path):
-        self.path = path
+        self.path = path.replace("user", "luis_tavico").replace('"', "")
 
     def setR(self, r):
         self.r = r

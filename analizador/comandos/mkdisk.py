@@ -17,7 +17,7 @@ class Mkdisk:
             print("¡Error! el valor del parametro 'size' debe ser mayor a 0.")
 
     def setPath(self, path):
-        self.path = path.replace("user", "luis_tavico")
+        self.path = path.replace("user", "luis_tavico").replace('"', "")
     
     def setFit(self, fit):
         if (fit == "BF"):
@@ -39,18 +39,6 @@ class Mkdisk:
             self.errors += 1
             print("¡Error! el valor del parametro 'unit' debe ser 'K' o 'M'.")
 
-    '''
-    def setSizePartition(self, size):
-        if self.partition1 == 0:
-            self.partition1 = size
-        elif self.partition2 == 0:
-            self.partition2 = size
-        elif self.partition3 == 0:
-            self.partition3 = size
-        elif self.partition4 == 0:
-            self.partition4 = size
-    '''
-
     #GET
     def getSize(self):
         return self.size
@@ -63,30 +51,3 @@ class Mkdisk:
     
     def getUnit(self):
         return self.unit
-    
-    '''
-    def getPartitionFree(self):
-        if self.partition1 == 0 :
-            return 76
-        elif self.partition2 == 0:
-            return self.partition1
-        elif self.partition3 == 0:
-            return self.partition2
-        elif self.partition4 == 0:
-            return self.partition3
-        else:
-            return None
-    '''
-    
-    '''
-    def pack_data(self):
-        return struct.pack('q50s2siiii', self.size, self.path.encode(), self.unit.encode(), self.partition1, self.partition2, self.partition3, self.partition4)
-
-    @classmethod
-    def unpack_data(cls, data_bytes):
-        size, path, fit, unit = struct.unpack('q50s2siiii', data_bytes)
-        return cls(size, path.decode(), fit, unit.decode())
-    
-    def getLength(self):
-        return 76
-    '''

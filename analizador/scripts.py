@@ -1,12 +1,14 @@
 import os
 import random
 from datetime import datetime
+import shutil
 from analizador.comandos.cat import Cat
 from analizador.comandos.chgrp import Chgrp
 from analizador.comandos.chmod import Chmod
 from analizador.comandos.chown import Chown
 from analizador.comandos.copy import Copy
 from analizador.comandos.edit import Edit
+from analizador.comandos.execute import Execute
 from analizador.comandos.fdisk import Fdisk
 #from analizador.comandos.find import Find
 from analizador.comandos.login import Login
@@ -75,6 +77,8 @@ def comando_activar(valor):
         script = Chgrp()
     elif (comando.lower() == "chmod"):
         script = Chmod()
+    elif (comando.lower() == "execute"):
+        script = Execute()
 
 
 def comando_ejecutar(parametro, valor):
@@ -512,33 +516,45 @@ def comando_ejecutar(parametro, valor):
     #COMANDO MKDIR
     elif (comando == 'mkdir'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'r'):
             script.setR(True)
         elif (parametro == 'ejecutar'):
-            pass
+            if (script.getR()):
+                try:
+                    os.makedirs(script.getPath())
+                except FileNotFoundError as ex:
+                    print(ex)
+            else:
+                try:
+                    os.mkdir(script.getPath())
+                except FileNotFoundError as ex:
+                    print(ex)
         else:
             print("¡Error! parametro no valido.")
         return None
     #COMANDO COPY
     elif (comando == 'copy'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'destino'):
-            pass
+            script.setDestino(valor)
         elif (parametro == 'ejecutar'):
-            pass
+            if (os.path.isfile(script.getPath())):
+                shutil.copy(script.getPath(), script.getDestino())
+            elif (os.path.isdir(script.getPath())):
+                shutil.copytree(script.getPath(), os.path.join(script.getDestino(), os.path.basename(script.getPath())))
         else:
             print("¡Error! parametro no valido.")
         return None
     #COMANDO MOVE
     elif (comando == 'move'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'destino'):
-            pass
+            script.setDestino(valor)
         elif (parametro == 'ejecutar'):
-            pass
+            shutil.move(script.getPath(), script.getDestino())
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -556,9 +572,9 @@ def comando_ejecutar(parametro, valor):
     #COMANDO CHOWN
     elif (comando == 'chown'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'user'):
-            pass
+            script.setName(valor)
         elif (parametro == 'r'):
             script.setR(True)
         elif (parametro == 'ejecutar'):
@@ -569,9 +585,9 @@ def comando_ejecutar(parametro, valor):
     #COMANDO CHGRP
     elif (comando == 'chgrp'):
         if (parametro == 'user'):
-            pass
+            script.setUser(valor)
         elif (parametro == 'grp'):
-            pass
+            script.setGrp(valor)
         elif (parametro == 'ejecutar'):
             pass
         else:
@@ -580,9 +596,9 @@ def comando_ejecutar(parametro, valor):
     #COMANDO CHMOD
     elif (comando == 'chmod'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'ugo'):
-            pass
+            script.setUgo(valor)
         elif (parametro == 'r'):
             script.setR(True)
         elif (parametro == 'ejecutar'):
@@ -600,12 +616,16 @@ def comando_ejecutar(parametro, valor):
     #COMANDO EXECUTE
     elif (comando == 'execute'):
         if (parametro == "path"):
-            if os.path.exists(valor):
-                archivo = open(valor, "r")
-                contenido = archivo.read()
+            script.setPath(valor)
+        elif (parametro == 'ejecutar'):
+            if os.path.exists(script.getPath()):
+                with open(script.getPath(), 'r') as archivo:
+                    contenido = archivo.read()
                 return contenido
             else:
                 print("¡Error! archivo no encontrado.")
+        else:
+            print("¡Error! parametro no valido.")
         return None
     #COMANDO REP
     elif (comando == "rep"):

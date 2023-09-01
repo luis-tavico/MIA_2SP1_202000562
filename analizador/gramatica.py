@@ -54,9 +54,10 @@ reserved_words = {
 tokens = [
     'GUION',
     'IGUAL',
-    'RUTA_ARCHIVO_EEA',
+    'RUTA_ARCHIVO_ADSJ',
     'RUTA_ARCHIVO_TXT',
     'RUTA_DISCO',
+    'RUTA_CARPETA',
     'AJUSTE',
     'UNIDAD',
     'ENTERO',
@@ -72,12 +73,16 @@ def t_RUTA_ARCHIVO_TXT(t):
     r'(\"(\/(\w|\s)+)+\.txt\")|((\/\w+)+\.txt)'
     return t
 
-def t_RUTA_ARCHIVO_EEA(t):
-    r'(\"(\/(\w|\s)+)+\.eea\")|((\/\w+)+\.eea)'
+def t_RUTA_ARCHIVO_ADSJ(t):
+    r'(\"(\/(\w|\s)+)+\.adsj\")|((\/\w+)+\.adsj)'
     return t
 
 def t_RUTA_DISCO(t):
     r'(\"(\/(\w|\s)+)+\.dsk\")|((\/\w+)+\.dsk)'
+    return t
+
+def t_RUTA_CARPETA(t):
+    r'(\"(\/(\w|\s)+)+\")|((\/\w+)+)'
     return t
 
 def t_AJUSTE(t):
@@ -202,8 +207,9 @@ def p_param(t):
 def p_valor(t):
     '''valor : ENTERO
              | RUTA_ARCHIVO_TXT
-             | RUTA_ARCHIVO_EEA
+             | RUTA_ARCHIVO_ADSJ
              | RUTA_DISCO
+             | RUTA_CARPETA
              | AJUSTE
              | UNIDAD
              | CADENA'''

@@ -1,4 +1,4 @@
-class Remove:
+class Execute:
     def __init__(self, path = ""):
         self.path = path
 
