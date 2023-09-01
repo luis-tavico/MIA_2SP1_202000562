@@ -1,10 +1,10 @@
 class Cat:
-    def __init__(self, fileN = ""):
+    def __init__(self, fileN = []):
         self.fileN = fileN
 
     #SET
     def setFileN(self, fileN):
-        self.fileN = fileN
+        self.fileN.append(fileN)
 
     #GET
     def getFileN(self):

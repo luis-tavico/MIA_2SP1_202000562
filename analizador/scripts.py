@@ -2,15 +2,25 @@ import os
 import random
 from datetime import datetime
 from analizador.comandos.cat import Cat
+from analizador.comandos.chgrp import Chgrp
+from analizador.comandos.chmod import Chmod
+from analizador.comandos.chown import Chown
+from analizador.comandos.copy import Copy
+from analizador.comandos.edit import Edit
+from analizador.comandos.fdisk import Fdisk
+#from analizador.comandos.find import Find
 from analizador.comandos.login import Login
-from analizador.comandos.mkdisk import Mkdisk
 from analizador.comandos.mbr import Mbr
+from analizador.comandos.mkdir import Mkdir
+from analizador.comandos.mkdisk import Mkdisk
 from analizador.comandos.mkfile import Mkfile
 from analizador.comandos.mkgrp import Mkgrp
 from analizador.comandos.mkusr import Mkusr
+from analizador.comandos.move import Move
 from analizador.comandos.partition import Partition
+from analizador.comandos.rename import Rename
+from analizador.comandos.remove import Remove
 from analizador.comandos.rmdisk import Rmdisk
-from analizador.comandos.fdisk import Fdisk
 from analizador.comandos.rmgrp import Rmgrp
 from analizador.comandos.rmusr import Rmusr
 
@@ -21,16 +31,16 @@ def comando_activar(valor):
     global comando, script
     comando = valor
 
+    #comandos de discos
     if (comando.lower() == "mkdisk"):
         script = Mkdisk()
     elif (comando.lower() == "rmdisk"):
         script = Rmdisk()
     elif (comando.lower() == "fdisk"):
         script = Fdisk()
+    #comandos de usuarios y grupos
     elif (comando.lower() == "login"):
         script = Login()
-    elif (comando.lower() == "logout"):
-        pass
     elif (comando.lower() == "mkgrp"):
         script = Mkgrp()
     elif (comando.lower() == "rmgrp"):
@@ -39,10 +49,32 @@ def comando_activar(valor):
         script = Mkusr()
     elif (comando.lower() == "rmusr"):
         script = Rmusr()
+    #comandos de archivos y permisos
     elif (comando.lower() == "mkfile"):
         script = Mkfile()
     elif (comando.lower() == "cat"):
         script = Cat()
+    elif (comando.lower() == "remove"):
+        script = Remove()
+    elif (comando.lower() == "edit"):
+        script = Edit()
+    elif (comando.lower() == "rename"):
+        script = Rename()
+    elif (comando.lower() == "mkdir"):
+        script = Mkdir()
+    elif (comando.lower() == "copy"):
+        script = Copy()
+    elif (comando.lower() == "move"):
+        script = Move()
+    elif (comando.lower() == "find"):
+        #script = Find()
+        pass
+    elif (comando.lower() == "chown"):
+        script = Chown()
+    elif (comando.lower() == "chgrp"):
+        script = Chgrp()
+    elif (comando.lower() == "chmod"):
+        script = Chmod()
 
 
 def comando_ejecutar(parametro, valor):
@@ -248,8 +280,8 @@ def comando_ejecutar(parametro, valor):
             usuario_existe = False
             contraseña_correcta = False
             #leer archivo users.txt
-            with open("users.txt", "r") as f:
-                lineas = f.readlines()
+            with open("users.txt", "r") as archivo:
+                lineas = archivo.readlines()
             for linea in lineas:
                 usuario_grupo = linea.strip().split(", ")
                 if (usuario_grupo[1] == "U"):
@@ -408,75 +440,119 @@ def comando_ejecutar(parametro, valor):
     #COMANDO MKFILE
     elif (comando == 'mkfile'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'r'):
-            pass
+            script.setR(True)
         elif (parametro == 'size'):
-            pass
+            script.setSize(int(valor))
         elif (parametro == 'cont'):
-            pass
+            script.setCont(valor)
+        elif ('ejecutar'):
+            if (script.getR()):
+                pass
+            else:
+               print(script.getPath()) 
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO CAT
     elif (comando == 'cat'):
-        if (parametro == 'filen'):
-            pass
+        if (parametro[:4] == 'file'):
+            script.setFileN(valor)
+        elif (parametro == 'ejecutar'):
+            for fileN in script.getFileN():
+                print(fileN)
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO REMOVE
     elif (comando == 'remove'):
         if (parametro == 'path'):
             pass
+        elif (parametro == 'ejecutar'):
+            pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO EDIT
     elif (comando == 'edit'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'cont'):
-            pass
+            script.setCont(valor)
+        elif (parametro == 'ejecutar'):
+            contenido = ""
+            #leer archivo
+            try:
+                with open(script.getCont(), "r") as archivo:
+                    contenido = archivo.read()
+            except FileNotFoundError:
+                print(f"¡Error! el archivo no existe.")
+            #escribir contenido a archivo
+            try:
+                with open(script.getPath(), "a") as archivo:
+                    archivo.write(contenido)
+            except FileNotFoundError:
+                print(f"¡Error! el archivo no existe.")
+            print("¡Archivo editado exitosamente!")
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO RENAME
     elif (comando == 'rename'):
         if (parametro == 'path'):
             pass
         elif (parametro == 'name'):
             pass
+        elif (parametro == 'ejecutar'):
+            pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO MKDIR
     elif (comando == 'mkdir'):
         if (parametro == 'path'):
             pass
         elif (parametro == 'r'):
+            script.setR(True)
+        elif (parametro == 'ejecutar'):
             pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO COPY
     elif (comando == 'copy'):
         if (parametro == 'path'):
             pass
         elif (parametro == 'destino'):
             pass
+        elif (parametro == 'ejecutar'):
+            pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO MOVE
     elif (comando == 'move'):
         if (parametro == 'path'):
             pass
         elif (parametro == 'destino'):
             pass
+        elif (parametro == 'ejecutar'):
+            pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO FIND
     elif (comando == 'find'):
         if (parametro == 'path'):
             pass
         elif (parametro == 'name'):
             pass
+        elif (parametro == 'ejecutar'):
+            pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO CHOWN
     elif (comando == 'chown'):
         if (parametro == 'path'):
@@ -484,17 +560,23 @@ def comando_ejecutar(parametro, valor):
         elif (parametro == 'user'):
             pass
         elif (parametro == 'r'):
+            script.setR(True)
+        elif (parametro == 'ejecutar'):
             pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO CHGRP
     elif (comando == 'chgrp'):
         if (parametro == 'user'):
             pass
         elif (parametro == 'grp'):
             pass
+        elif (parametro == 'ejecutar'):
+            pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO CHMOD
     elif (comando == 'chmod'):
         if (parametro == 'path'):
@@ -502,9 +584,12 @@ def comando_ejecutar(parametro, valor):
         elif (parametro == 'ugo'):
             pass
         elif (parametro == 'r'):
+            script.setR(True)
+        elif (parametro == 'ejecutar'):
             pass
         else:
             print("¡Error! parametro no valido.")
+        return None
     #COMANDO PAUSE
     elif (comando == 'pause'):
         while True: 

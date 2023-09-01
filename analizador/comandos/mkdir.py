@@ -1,5 +1,5 @@
 class Mkdir:
-    def __init__(self, path , r):
+    def __init__(self, path = "", r = False):
         self.path = path
         self.r = r
 

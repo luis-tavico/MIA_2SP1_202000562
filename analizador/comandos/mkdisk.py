@@ -17,7 +17,7 @@ class Mkdisk:
             print("¡Error! el valor del parametro 'size' debe ser mayor a 0.")
 
     def setPath(self, path):
-        self.path = path
+        self.path = path.replace("user", "luis_tavico")
     
     def setFit(self, fit):
         if (fit == "BF"):

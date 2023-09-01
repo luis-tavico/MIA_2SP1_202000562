@@ -4,7 +4,7 @@ class Remove:
 
     #SET
     def setPath(self, path):
-        self.path = path
+        self.path = path.replace("user", "luis_tavico")
 
     #GET
     def getPath(self):

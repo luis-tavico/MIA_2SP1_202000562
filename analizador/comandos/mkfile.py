@@ -1,5 +1,5 @@
 class Mkfile:
-    def __init__(self, path , r, size, cont):
+    def __init__(self, path = "", r = False, size = 0, cont = ""):
         self.path = path
         self.r = r
         self.size = size
@@ -7,7 +7,7 @@ class Mkfile:
 
     #SET
     def setPath(self, path):
-        self.path = path
+        self.path = path.replace("user", "luis_tavico")
 
     def setR(self, r):
         self.r = r

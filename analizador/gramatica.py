@@ -48,13 +48,14 @@ reserved_words = {
     'destino' : 'DESTINO',
     'ugo' : 'UGO',
     #Valores
-    'full' : 'FULL'
+    #'full' : 'FULL'
 }
 
 tokens = [
     'GUION',
     'IGUAL',
-    'RUTA_ARCHIVO',
+    'RUTA_ARCHIVO_EEA',
+    'RUTA_ARCHIVO_TXT',
     'RUTA_DISCO',
     'AJUSTE',
     'UNIDAD',
@@ -67,7 +68,11 @@ t_ignore = ' \t'
 t_GUION = r'-'
 t_IGUAL = r'='
 
-def t_RUTA_ARCHIVO(t):
+def t_RUTA_ARCHIVO_TXT(t):
+    r'(\"(\/(\w|\s)+)+\.txt\")|((\/\w+)+\.txt)'
+    return t
+
+def t_RUTA_ARCHIVO_EEA(t):
     r'(\"(\/(\w|\s)+)+\.eea\")|((\/\w+)+\.eea)'
     return t
 
@@ -124,14 +129,14 @@ waiting_scripts = ""
 precedence = ( )
 
 def p_instrucciones(t):
-    '''instrucciones    : instruccion instrucciones
-                        | instruccion '''
+    '''instrucciones : instruccion instrucciones
+                     | instruccion'''
     global waiting_scripts
     t[0] = waiting_scripts
 
 def p_instruccion(t):
-    '''instruccion : comando declaraciones
-                   | comando '''
+    '''instruccion : comando parametros
+                   | comando'''
     global waiting_scripts
     waiting_scripts = comando_ejecutar("ejecutar", None)
 
@@ -165,40 +170,49 @@ def p_comando(t):
                | REP'''
     comando_activar(str(t[1]))
     
-def p_declaraciones(t):
-    '''declaraciones : declaracion declaraciones
-                     | declaracion '''
+def p_parametros (t):
+    '''parametros : parametro parametros
+                  | parametro'''
 
-def p_declaracion(t):
-    'declaracion : GUION parametro IGUAL valor'
+def p_parametro (t):
+    '''parametro : argumento
+                 | opcion'''
+
+def p_argumento(t):
+    'argumento : GUION param IGUAL valor'
     global waiting_scripts
     waiting_scripts = comando_ejecutar(str(t[2]), str(t[4]))
 
-def p_parametro(t):
-    '''parametro : SIZE
-                 | PATH
-                 | FIT
-                 | UNIT
-                 | NAME 
-                 | USER
-                 | PASS
-                 | ID
-                 | GRP
-                 | R
-                 | CONT
-                 | FILEN
-                 | DESTINO
-                 | UGO'''
+def p_param(t):
+    '''param : SIZE
+             | PATH
+             | FIT
+             | UNIT
+             | NAME 
+             | USER
+             | PASS
+             | ID
+             | GRP
+             | CONT
+             | FILEN
+             | DESTINO
+             | UGO'''
     t[0] = t[1]
 
 def p_valor(t):
     '''valor : ENTERO
-             | RUTA_ARCHIVO
+             | RUTA_ARCHIVO_TXT
+             | RUTA_ARCHIVO_EEA
              | RUTA_DISCO
              | AJUSTE
              | UNIDAD
-             | CADENA '''
-    t[0] = t[1]    
+             | CADENA'''
+    t[0] = t[1]
+
+def p_opcion(t):
+    'opcion : GUION R'
+    global waiting_scripts
+    waiting_scripts = comando_ejecutar(str(t[2]), None)
 
 def p_error(t):
     print(f"Error sintáctico en {t}")

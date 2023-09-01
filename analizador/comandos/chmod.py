@@ -1,5 +1,5 @@
-class chmod:
-    def __init__(self, path = "", ugo = "", r = ""):
+class Chmod:
+    def __init__(self, path = "", ugo = "", r = False):
         self.path = path
         self.ugo = ugo
         self.r = r

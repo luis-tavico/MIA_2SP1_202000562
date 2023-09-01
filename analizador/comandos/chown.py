@@ -1,5 +1,5 @@
 class Chown:
-    def __init__(self, path = "", user = "", r = ""):
+    def __init__(self, path = "", user = "", r = False):
         self.path = path
         self.user = user
         self.r = r
