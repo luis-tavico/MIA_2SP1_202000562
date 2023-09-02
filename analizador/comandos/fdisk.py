@@ -19,7 +19,7 @@ class Fdisk:
             self.size = size
         else:
             self.errors += 1
-            print("¡Ocurrio un error al asignar valor al parametro 'size', el valor debe ser mayor a 0!")
+            print("¡Error! el valor del parametro 'size' debe ser mayor a 0.")
 
 
     def setPath(self, path):

@@ -25,14 +25,3 @@ class Login:
 
     def getId(self):
         return self.id    
-            
-    def pack_data(self):
-        return struct.pack('45s', self.id.encode(), self.type.encode(), self.fs.encode())
-
-    @classmethod
-    def unpack_data(cls, data_bytes):
-        id, type, fs = struct.unpack('45s', data_bytes)
-        return cls(id.decode(), type.decode(), fs.decode())
-    
-    def getLength(self):
-        return 45

@@ -96,11 +96,11 @@ def comando_ejecutar(parametro, valor):
         elif (parametro == "ejecutar"):
             if (script.errors == 0):
                 #crear un arhivo vacio
-                size_file = script.getSize()
+                tamano_archivo = script.getSize()
                 if (script.getUnit() == "M"):
-                    size_file = size_file * 1024
+                    tamano_archivo = tamano_archivo * 1024
                 with open(script.getPath(), 'wb') as archivo:
-                    for i in range(0, size_file):
+                    for i in range(0, tamano_archivo):
                         archivo.write(b'\x00' * 1024)
                 #crear mbr
                 mbr = Mbr()
@@ -318,26 +318,31 @@ def comando_ejecutar(parametro, valor):
         if (parametro == 'name'):
             script.setName(valor)
         elif (parametro == 'ejecutar'):
-            num = 1
-            grupo_existe = False
-            #leer archivo users.txt
-            with open("users.txt", "r") as archivo:
-                lineas = archivo.readlines()
-            for linea in lineas:
-                usuario_grupo = linea.strip().split(", ")
-                if (usuario_grupo[1] == "G"):
-                    if (script.getName() in usuario_grupo):
-                        grupo_existe = True
-                        break
-                    else:
-                        num += 1
-            if (not grupo_existe):
-                #editar archivo
-                with open("users.txt", 'a') as archivo:
-                    archivo.write(str(num) + ", G, " + script.getName() + "\n")
-                print("¡Grupo creado exitosamente!")
+            if (usuario_actual == "root"):
+                num = 1
+                grupo_existe = False
+                #leer archivo users.txt
+                with open("users.txt", "r") as archivo:
+                    lineas = archivo.readlines()
+                for linea in lineas:
+                    usuario_grupo = linea.strip().split(", ")
+                    if (usuario_grupo[1] == "G"):
+                        if (script.getName() in usuario_grupo):
+                            grupo_existe = True
+                            break
+                        else:
+                            num += 1
+                if (not grupo_existe):
+                    #editar archivo
+                    with open("users.txt", 'a') as archivo:
+                        archivo.write(str(num) + ", G, " + script.getName() + "\n")
+                    print("¡Grupo creado exitosamente!")
+                else:
+                    print("¡Error! el grupo a crear ya existe.")
+            elif (usuario_actual == ""):
+                print("¡Error! ningun usuario ha iniciado sesion.")
             else:
-                print("¡Error! el grupo a crear ya existe.")
+                print("¡Error! solo el usuario 'root' tiene permiso de crear grupos.")
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -346,28 +351,33 @@ def comando_ejecutar(parametro, valor):
         if (parametro == 'name'):
             script.setName(valor)
         elif (parametro == 'ejecutar'):
-            cont_editado = ""
-            grupo_existe = False
-            pos = None
-            #leer archivo users.txt
-            with open("users.txt", "r") as archivo:
-                lineas = archivo.readlines()
-            for i, linea in enumerate(lineas):
-                usuario_grupo = linea.strip().split(", ")
-                if (usuario_grupo[1] == "G"):
-                    if (script.getName() in usuario_grupo):
-                        cont_editado = "0, " + usuario_grupo[1] + ", " + usuario_grupo[2] + "\n"
-                        grupo_existe = True
-                        pos = i
-                        break
-            if (grupo_existe):
-                lineas[pos] = cont_editado
-                #escribir las líneas de nuevo en el archivo
-                with open("users.txt", 'w') as archivo:
-                    archivo.writelines(lineas)
-                print("¡Grupo eliminado exitosamente!")
+            if (usuario_actual == "root"):
+                cont_editado = ""
+                grupo_existe = False
+                pos = None
+                #leer archivo users.txt
+                with open("users.txt", "r") as archivo:
+                    lineas = archivo.readlines()
+                for i, linea in enumerate(lineas):
+                    usuario_grupo = linea.strip().split(", ")
+                    if (usuario_grupo[1] == "G"):
+                        if (script.getName() in usuario_grupo):
+                            cont_editado = "0, " + usuario_grupo[1] + ", " + usuario_grupo[2] + "\n"
+                            grupo_existe = True
+                            pos = i
+                            break
+                if (grupo_existe):
+                    lineas[pos] = cont_editado
+                    #escribir las líneas de nuevo en el archivo
+                    with open("users.txt", 'w') as archivo:
+                        archivo.writelines(lineas)
+                    print("¡Grupo eliminado exitosamente!")
+                else:
+                    print("¡Error! el grupo a eliminar no existe")
+            elif (usuario_actual == ""):
+                print("¡Error! ningun usuario ha iniciado sesion.")
             else:
-                print("¡Error! el grupo a eliminar no existe")
+                print("¡Error! solo el usuario 'root' tiene permiso de eliminar grupos.")
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -380,34 +390,39 @@ def comando_ejecutar(parametro, valor):
         elif (parametro == 'grp'):
             script.setGrp(valor)
         elif (parametro == 'ejecutar'):
-            if (script.errors == 0):
-                usuario_existe = False
-                grupo_existe = False
-                pos = None
-                #leer archivo users.txt
-                with open("users.txt", "r") as archivo:
-                    lineas = archivo.readlines()
-                for i, linea in enumerate(lineas):
-                    usuario_grupo = linea.strip().split(", ")
-                    if (usuario_grupo[1] == "U"):
-                        if (script.getUser() in usuario_grupo):
-                            usuario_existe = True
-                    elif (usuario_grupo[1] == "G"):
-                        if (script.getGrp() == usuario_grupo[2]):
-                            grupo_existe = True
-                            pos = usuario_grupo[0]
-                if (grupo_existe):
-                    if (not usuario_existe):
-                        #editar archivo
-                        with open("users.txt", 'a') as archivo:
-                            archivo.write(pos + ", U, " + script.getGrp() + ", " + script.getUser() + ", " + script.getPassword() + "\n")
-                        print("¡Usuario creado exitosamente!")
+            if (usuario_actual == 'root'):
+                if (script.errors == 0):
+                    usuario_existe = False
+                    grupo_existe = False
+                    pos = None
+                    #leer archivo users.txt
+                    with open("users.txt", "r") as archivo:
+                        lineas = archivo.readlines()
+                    for i, linea in enumerate(lineas):
+                        usuario_grupo = linea.strip().split(", ")
+                        if (usuario_grupo[1] == "U"):
+                            if (script.getUser() in usuario_grupo):
+                                usuario_existe = True
+                        elif (usuario_grupo[1] == "G"):
+                            if (script.getGrp() == usuario_grupo[2]):
+                                grupo_existe = True
+                                pos = usuario_grupo[0]
+                    if (grupo_existe):
+                        if (not usuario_existe):
+                            #editar archivo
+                            with open("users.txt", 'a') as archivo:
+                                archivo.write(pos + ", U, " + script.getGrp() + ", " + script.getUser() + ", " + script.getPassword() + "\n")
+                            print("¡Usuario creado exitosamente!")
+                        else:
+                            print("¡Error! el usuario a crear ya existe.")
                     else:
-                        print("¡Error! el usuario a crear ya existe.")
+                        print("¡Error! el grupo no existe.")
                 else:
-                    print("¡Error! el grupo no existe.")
+                    print('¡Error! no se pudo crear el usuario.')
+            elif (usuario_actual == ""):
+                print("¡Error! ningun usuario ha iniciado sesion.")
             else:
-                print('¡Error! no se pudo crear el usuario.')
+                print("¡Error! solo el usuario 'root' tiene permiso de crear usuarios.")
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -416,28 +431,33 @@ def comando_ejecutar(parametro, valor):
         if (parametro == 'user'):
             script.setUser(valor)
         elif (parametro == 'ejecutar'):
-            cont_editado = ""
-            usuario_existe = False
-            pos = None
-            #leer archivo users.txt
-            with open("users.txt", "r") as archivo:
-                lineas = archivo.readlines()
-            for i, linea in enumerate(lineas):
-                usuario_grupo = linea.strip().split(", ")
-                if (usuario_grupo[1] == "U"):
-                    if (script.getUser() in usuario_grupo):
-                        cont_editado = "0, " + "U, " + usuario_grupo[2] + ", " + usuario_grupo[3] + ", " + usuario_grupo[4] + "\n"
-                        usuario_existe = True
-                        pos = i
-                        break
-            if (usuario_existe):
-                lineas[pos] = cont_editado
-                #escribir las líneas de nuevo en el archivo
-                with open("users.txt", 'w') as archivo:
-                    archivo.writelines(lineas)
-                print("¡Usuario eliminado exitosamente!")
+            if (usuario_actual == "root"):
+                cont_editado = ""
+                usuario_existe = False
+                pos = None
+                #leer archivo users.txt
+                with open("users.txt", "r") as archivo:
+                    lineas = archivo.readlines()
+                for i, linea in enumerate(lineas):
+                    usuario_grupo = linea.strip().split(", ")
+                    if (usuario_grupo[1] == "U"):
+                        if (script.getUser() in usuario_grupo):
+                            cont_editado = "0, " + "U, " + usuario_grupo[2] + ", " + usuario_grupo[3] + ", " + usuario_grupo[4] + "\n"
+                            usuario_existe = True
+                            pos = i
+                            break
+                if (usuario_existe):
+                    lineas[pos] = cont_editado
+                    #escribir las líneas de nuevo en el archivo
+                    with open("users.txt", 'w') as archivo:
+                        archivo.writelines(lineas)
+                    print("¡Usuario eliminado exitosamente!")
+                else:
+                    print("¡Error! el usuario a eliminar no existe")
+            elif (usuario_actual == ""):
+                print("¡Error! ningun usuario ha iniciado sesion.")
             else:
-                print("¡Error! el usuario a eliminar no existe")
+                print("¡Error! solo el usuario 'root' tiene permiso de eliminar usuarios.")
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -453,9 +473,47 @@ def comando_ejecutar(parametro, valor):
             script.setCont(valor)
         elif ('ejecutar'):
             if (script.getR()):
-                pass
+                carpetas = os.path.dirname(script.getPath())
+                if (not os.path.exists(script.getPath())):
+                    if (not os.path.exists(carpetas)):
+                        os.makedirs(carpetas)
+                    contenido = ""
+                    if (script.getSize() != 0):
+                        num = 0
+                        for i in range(script.getSize()):
+                            if (num == 10): num = 0
+                            contenido += str(num)
+                            num += 1
+                    with open(script.getPath(), "w") as archivo:
+                        archivo.write(contenido)
+                else:
+                    respuesta = input("El archivo ya existe, ¿Desea sobreescribirlo? (y/n)")
+                    if (respuesta == "s"):
+                        #pendiente                       
+                        contenido = ""
+                        if (script.getSize() != 0):
+                            num = 0
+                            for i in range(script.getSize()):
+                                if (num == 10): num = 0
+                                contenido += str(num)
+                                num += 1
+                        with open(script.getPath(), "a") as archivo:
+                            archivo.write(contenido)
             else:
-               print(script.getPath()) 
+                carpetas = os.path.dirname(script.getPath())
+                if (not os.path.exists(script.getPath())):
+                    if (os.path.exists(carpetas)):
+                        with open(script.getPath(), "w") as archivo:
+                            archivo.write("¡Hola, este es mi archivo de texto en Python!\n")
+                    else:
+                        print("¡Error! la ruta de carpetas no existe.")
+                else:
+                    respuesta = input("El archivo ya existe, ¿Desea sobreescribirlo? (y/n)")
+                    if (respuesta == "s"):
+                        #editar esto despues
+                        with open(script.getPath(), "w") as archivo:
+                            archivo.write("¡Hola, este es mi archivo de texto en Python!\n")
+
         else:
             print("¡Error! parametro no valido.")
         return None
