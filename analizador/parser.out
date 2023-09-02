@@ -54,7 +54,7 @@ Rule 48    param -> DESTINO
 Rule 49    param -> UGO
 Rule 50    valor -> ENTERO
 Rule 51    valor -> RUTA_ARCHIVO_TXT
-Rule 52    valor -> RUTA_ARCHIVO_EEA
+Rule 52    valor -> RUTA_ARCHIVO_ADSJ
 Rule 53    valor -> RUTA_DISCO
 Rule 54    valor -> RUTA_CARPETA
 Rule 55    valor -> AJUSTE
@@ -105,7 +105,7 @@ REP                  : 31
 RMDISK               : 6
 RMGRP                : 14
 RMUSR                : 16
-RUTA_ARCHIVO_EEA     : 52
+RUTA_ARCHIVO_ADSJ    : 52
 RUTA_ARCHIVO_TXT     : 51
 RUTA_CARPETA         : 54
 RUTA_DISCO           : 53
@@ -1628,7 +1628,7 @@ state 53
     (36) argumento -> GUION param IGUAL . valor
     (50) valor -> . ENTERO
     (51) valor -> . RUTA_ARCHIVO_TXT
-    (52) valor -> . RUTA_ARCHIVO_EEA
+    (52) valor -> . RUTA_ARCHIVO_ADSJ
     (53) valor -> . RUTA_DISCO
     (54) valor -> . RUTA_CARPETA
     (55) valor -> . AJUSTE
@@ -1637,7 +1637,7 @@ state 53
 
     ENTERO          shift and go to state 55
     RUTA_ARCHIVO_TXT shift and go to state 56
-    RUTA_ARCHIVO_EEA shift and go to state 57
+    RUTA_ARCHIVO_ADSJ shift and go to state 57
     RUTA_DISCO      shift and go to state 58
     RUTA_CARPETA    shift and go to state 59
     AJUSTE          shift and go to state 60
@@ -1753,37 +1753,37 @@ state 56
 
 state 57
 
-    (52) valor -> RUTA_ARCHIVO_EEA .
+    (52) valor -> RUTA_ARCHIVO_ADSJ .
 
-    GUION           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MKDISK          reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    RMDISK          reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    FDISK           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MOUNT           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    UNMOUNT         reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MKFS            reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    LOGIN           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    LOGOUT          reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MKGRP           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    RMGRP           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MKUSR           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    RMUSR           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MKFILE          reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    CAT             reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    REMOVE          reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    EDIT            reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    RENAME          reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MKDIR           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    COPY            reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    MOVE            reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    FIND            reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    CHOWN           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    CHGRP           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    CHMOD           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    PAUSE           reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    EXECUTE         reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    REP             reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
-    $end            reduce using rule 52 (valor -> RUTA_ARCHIVO_EEA .)
+    GUION           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKDISK          reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RMDISK          reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    FDISK           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MOUNT           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    UNMOUNT         reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKFS            reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    LOGIN           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    LOGOUT          reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKGRP           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RMGRP           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKUSR           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RMUSR           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKFILE          reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CAT             reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    REMOVE          reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    EDIT            reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RENAME          reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKDIR           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    COPY            reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MOVE            reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    FIND            reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CHOWN           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CHGRP           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CHMOD           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    PAUSE           reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    EXECUTE         reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    REP             reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
+    $end            reduce using rule 52 (valor -> RUTA_ARCHIVO_ADSJ .)
 
 
 state 58

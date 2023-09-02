@@ -58,6 +58,7 @@ tokens = [
     'RUTA_ARCHIVO_TXT',
     'RUTA_DISCO',
     'RUTA_CARPETA',
+    'NOMBRE_ARCHIVO',
     'AJUSTE',
     'UNIDAD',
     'ENTERO',
@@ -84,6 +85,9 @@ def t_RUTA_DISCO(t):
 def t_RUTA_CARPETA(t):
     r'(\"(\/(\w|\s)+)+\")|((\/\w+)+)'
     return t
+
+def t_NOMBRE_ARCHIVO(t):
+    r'(\"(\w|\s)+\.txt\")|(\w)+\.txt)'
 
 def t_AJUSTE(t):
     r'BF|FF|WF'
@@ -210,6 +214,7 @@ def p_valor(t):
              | RUTA_ARCHIVO_ADSJ
              | RUTA_DISCO
              | RUTA_CARPETA
+             | NOMBRE_ARCHIVO
              | AJUSTE
              | UNIDAD
              | CADENA'''

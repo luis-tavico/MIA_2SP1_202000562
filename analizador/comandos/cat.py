@@ -1,11 +1,18 @@
+import os
+
 class Cat:
-    def __init__(self, fileN = []):
-        self.fileN = fileN
+    def __init__(self, paths = []):
+        self.paths = paths
+        self.errors = 0
 
     #SET
-    def setFileN(self, fileN):
-        self.fileN.append(fileN)
+    def setPathFile(self, fileN):
+        fileN = fileN.replace("user", "luis_tavico").replace('"', "")
+        if (not os.path.exists(fileN)):
+            print("¡Error! el archivo no existe.")
+            self.errors += 1
+        self.paths.append(fileN)
 
     #GET
-    def getFileN(self):
-        return self.fileN
+    def getPathFiles(self):
+        return self.paths

@@ -8,7 +8,7 @@ class Rename:
         self.path = path.replace("user", "luis_tavico").replace('"', "")
 
     def setName(self, name):
-        self.name = name
+        self.name = name.replace('"', "")
 
     #GET
     def getPath(self):

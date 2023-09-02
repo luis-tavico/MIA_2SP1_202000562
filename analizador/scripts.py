@@ -311,7 +311,7 @@ def comando_ejecutar(parametro, valor):
             if (usuario_actual != ""):
                 usuario_actual = ""
             else:
-                print("¡Error! No existe una sesion activa.")
+                print("¡Error! no existe una sesion activa.")
         return None
     #COMANDO MKGRP
     elif (comando == 'mkgrp'):
@@ -472,24 +472,12 @@ def comando_ejecutar(parametro, valor):
         elif (parametro == 'cont'):
             script.setCont(valor)
         elif ('ejecutar'):
-            if (script.getR()):
-                carpetas = os.path.dirname(script.getPath())
-                if (not os.path.exists(script.getPath())):
-                    if (not os.path.exists(carpetas)):
-                        os.makedirs(carpetas)
-                    contenido = ""
-                    if (script.getSize() != 0):
-                        num = 0
-                        for i in range(script.getSize()):
-                            if (num == 10): num = 0
-                            contenido += str(num)
-                            num += 1
-                    with open(script.getPath(), "w") as archivo:
-                        archivo.write(contenido)
-                else:
-                    respuesta = input("El archivo ya existe, ¿Desea sobreescribirlo? (y/n)")
-                    if (respuesta == "s"):
-                        #pendiente                       
+            if script.errors == 0:
+                if (script.getR()):
+                    carpetas = os.path.dirname(script.getPath())
+                    if (not os.path.exists(script.getPath())):
+                        if (not os.path.exists(carpetas)):
+                            os.makedirs(carpetas)
                         contenido = ""
                         if (script.getSize() != 0):
                             num = 0
@@ -497,42 +485,93 @@ def comando_ejecutar(parametro, valor):
                                 if (num == 10): num = 0
                                 contenido += str(num)
                                 num += 1
-                        with open(script.getPath(), "a") as archivo:
+                        if (script.getCont() != ""):
+                            with open(script.getCont(), "r") as archivo:
+                                contenido = archivo.read()
+                        with open(script.getPath(), "w") as archivo:
                             archivo.write(contenido)
-            else:
-                carpetas = os.path.dirname(script.getPath())
-                if (not os.path.exists(script.getPath())):
-                    if (os.path.exists(carpetas)):
-                        with open(script.getPath(), "w") as archivo:
-                            archivo.write("¡Hola, este es mi archivo de texto en Python!\n")
                     else:
-                        print("¡Error! la ruta de carpetas no existe.")
+                        respuesta = input("El archivo ya existe, ¿Desea sobreescribirlo? (y/n)")
+                        if (respuesta == "s"):
+                            #pendiente                       
+                            contenido = ""
+                            if (script.getSize() != 0):
+                                num = 0
+                                for i in range(script.getSize()):
+                                    if (num == 10): num = 0
+                                    contenido += str(num)
+                                    num += 1
+                            if (script.getCont() != ""):
+                                with open(script.getCont(), "r") as archivo:
+                                    contenido = archivo.read()
+                            with open(script.getPath(), "a") as archivo:
+                                archivo.write(contenido)
                 else:
-                    respuesta = input("El archivo ya existe, ¿Desea sobreescribirlo? (y/n)")
-                    if (respuesta == "s"):
-                        #editar esto despues
-                        with open(script.getPath(), "w") as archivo:
-                            archivo.write("¡Hola, este es mi archivo de texto en Python!\n")
-
+                    carpetas = os.path.dirname(script.getPath())
+                    if (not os.path.exists(script.getPath())):
+                        if (os.path.exists(carpetas)):
+                            contenido = ""
+                            if (script.getSize() != 0):
+                                num = 0
+                                for i in range(script.getSize()):
+                                    if (num == 10): num = 0
+                                    contenido += str(num)
+                                    num += 1
+                            if (script.getCont() != ""):
+                                with open(script.getCont(), "r") as archivo:
+                                    contenido = archivo.read()
+                            with open(script.getPath(), "w") as archivo:
+                                archivo.write(contenido)
+                        else:
+                            print("¡Error! la ruta de carpetas no existe.")
+                    else:
+                        respuesta = input("El archivo ya existe, ¿Desea sobreescribirlo? (y/n)")
+                        if (respuesta == "s"):
+                            #pendiente                       
+                            contenido = ""
+                            if (script.getSize() != 0):
+                                num = 0
+                                for i in range(script.getSize()):
+                                    if (num == 10): num = 0
+                                    contenido += str(num)
+                                    num += 1
+                            if (script.getCont() != ""):
+                                with open(script.getCont(), "r") as archivo:
+                                    contenido = archivo.read()
+                            with open(script.getPath(), "a") as archivo:
+                                archivo.write(contenido)
+            else:
+                print('¡Error! no se pudo crear el archivo.')
         else:
             print("¡Error! parametro no valido.")
         return None
     #COMANDO CAT
     elif (comando == 'cat'):
         if (parametro[:4] == 'file'):
-            script.setFileN(valor)
+            script.setPathFile(valor)
         elif (parametro == 'ejecutar'):
-            for fileN in script.getFileN():
-                print(fileN)
+            if script.errors == 0:
+                for path in script.getPathFiles():
+                    with open(path, "r") as archivo:
+                        contenido = archivo.read()
+                    print(contenido)
+            else:
+                print('¡Error! no se pudo mostrar el contenido de archivo(s).')
         else:
             print("¡Error! parametro no valido.")
         return None
     #COMANDO REMOVE
     elif (comando == 'remove'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'ejecutar'):
-            pass
+            if script.errors == 0:
+                if (os.path.isfile(script.getPath())):
+                    os.remove(script.getPath())
+                elif (os.path.isdir(script.getPath())):
+                    os.rmdir(script.getPath())
+            else:
+                print("¡Error! no se pudo eliminar la carpeta o el archivo.")
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -563,11 +602,20 @@ def comando_ejecutar(parametro, valor):
     #COMANDO RENAME
     elif (comando == 'rename'):
         if (parametro == 'path'):
-            pass
+            script.setPath(valor)
         elif (parametro == 'name'):
-            pass
+            script.setName(valor)
         elif (parametro == 'ejecutar'):
-            pass
+            nueva_ruta = os.path.join(os.path.dirname(script.getPath()), script.getName())
+            try:
+                os.rename(script.getPath(), nueva_ruta)
+                print(f"La carpeta o archivo en '{script.getPath()}' ha sido renombrado a '{script.getName()}'.")
+            except FileNotFoundError:
+                print(f"La carpeta o archivo en '{script.getPath()}' no existe.")
+            except FileExistsError:
+                print(f"Ya existe un archivo o carpeta con el nombre '{script.getName()}'.")
+            except Exception as e:
+                print(f"Ocurrió un error al renombrar: {str(e)}")
         else:
             print("¡Error! parametro no valido.")
         return None

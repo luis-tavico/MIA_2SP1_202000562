@@ -1,9 +1,13 @@
+import os
+
+
 class Mkfile:
     def __init__(self, path = "", r = False, size = 0, cont = ""):
         self.path = path
         self.r = r
         self.size = size
         self.cont = cont
+        self.errors = 0
 
     #SET
     def setPath(self, path):
@@ -16,7 +20,10 @@ class Mkfile:
         self.size = size
 
     def setCont(self, cont):
-        self.cont = cont
+        self.cont = cont.replace("user", "luis_tavico").replace('"', "")
+        if (not os.path.exists(self.path)):
+            print("¡Error! el archivo no existe.")
+            self.errors += 1
 
     #GET
     def getPath(self):
