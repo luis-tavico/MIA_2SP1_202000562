@@ -1,5 +1,4 @@
-lista = ['path', 'ugo', 'r']
-
+lista = ['name', 'inodo']
 print('    #SET')
 for palabra in lista:
     print("    def set" + palabra.capitalize() + '(self, '+ palabra +'):\n        self.' + palabra + ' = ' + palabra + '\n')

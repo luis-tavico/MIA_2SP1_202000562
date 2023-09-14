@@ -1,13 +1,18 @@
-import struct
+import os
 
-class Rmdisk:
+class Mount:
     def __init__(self, path = "", name = ""):
-        self.path = path #45
-        self.name = name #15
+        self.path = path
+        self.name = name
+        self.username = os.getlogin()
+        self.errors = 0
 
     #SET
     def setPath(self, path):
-        self.path = path
+        self.path = path.replace("user", self.username).replace('"', "")
+        if not(os.path.exists(self.path)):
+            self.errors += 1
+            print("\033[91m<<Error>> {}\033[00m" .format("El disco no existe."))
 
     def setName(self, name):
         self.name = name
@@ -18,14 +23,3 @@ class Rmdisk:
 
     def getName(self):
         return self.name
-    
-    def pack_data(self):
-        return struct.pack('45s15s', self.path.encode(), self.name.encode())
-
-    @classmethod
-    def unpack_data(cls, data_bytes):
-        path, name = struct.unpack('45s15s', data_bytes)
-        return cls(path.decode(), name.decode())
-    
-    def getLength(self):
-        return 60

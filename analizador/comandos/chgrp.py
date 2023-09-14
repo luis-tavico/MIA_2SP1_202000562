@@ -1,5 +1,5 @@
 class Chgrp:
-    def __init__(self, user, grp):
+    def __init__(self, user = "", grp = ""):
         self.user = user
         self.grp = grp
 

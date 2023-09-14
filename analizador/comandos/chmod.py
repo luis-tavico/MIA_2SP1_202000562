@@ -1,12 +1,15 @@
+import os
+
 class Chmod:
     def __init__(self, path = "", ugo = "", r = False):
         self.path = path
         self.ugo = ugo
         self.r = r
+        self.username = os.getlogin()
 
     #SET
     def setPath(self, path):
-        self.path = path.replace("user", "luis_tavico").replace('"', "")
+        self.path = path.replace("user", self.username).replace('"', "")
 
     def setUgo(self, ugo):
         self.ugo = ugo

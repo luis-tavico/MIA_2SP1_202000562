@@ -63,7 +63,8 @@ tokens = [
     'UNIDAD',
     'ENTERO',
     'CADENA',
-    'FILEN'
+    'FILEN',
+    'COMENTARIO'
 ] + list(reserved_words.values())
 
 t_ignore = ' \t'
@@ -87,7 +88,8 @@ def t_RUTA_CARPETA(t):
     return t
 
 def t_NOMBRE_ARCHIVO(t):
-    r'(\"(\w|\s)+\.txt\")|(\w)+\.txt)'
+    r'(\"(\w|\s)+\.txt\")|((\w)+\.txt)'
+    return t
 
 def t_AJUSTE(t):
     r'BF|FF|WF'
@@ -115,12 +117,13 @@ def t_ENTERO(t):
         t.value = 0
     return t
 
-def t_COMENTARIO(t):
-    r'\#.*'
-
 def t_newline(t):
     r'\n+'
     t.lexer.lineno += t.value.count("\n")
+
+def t_COMENTARIO(t):
+    r'\#.*'
+    return t
 
 def t_error(t):
     print(f"Caracter {t.value[0]} ilegal")
@@ -176,7 +179,8 @@ def p_comando(t):
                | CHMOD
                | PAUSE
                | EXECUTE
-               | REP'''
+               | REP
+               | COMENTARIO'''
     comando_activar(str(t[1]))
     
 def p_parametros (t):

@@ -2,15 +2,16 @@ import os
 import struct
 
 class Fdisk:
-    def __init__(self, size = 0, path = "", name = "",  unit = "K", type = "", fit = "", delete = "", add = ""):
-        self.size = size #8
-        self.path = path #50
-        self.name = name #15
-        self.unit = unit #2
+    def __init__(self, size = 0, path = "", name = "",  unit = "K", type = "P", fit = "WF", delete = "FULL", add = 0):
+        self.size = size
+        self.path = path
+        self.name = name
+        self.unit = unit
         self.type = type
         self.fit = fit
         self.delete = delete
         self.add = add
+        self.username = os.getlogin()
         self.errors = 0
 
     #SET
@@ -23,11 +24,9 @@ class Fdisk:
 
 
     def setPath(self, path):
-        if os.path.exists(path):
-            self.path = path
-        else:
-            self.errors += 1
-            print("¡Error! disco no encontrado.")
+        self.path = path.replace("user", self.username).replace('"', "")
+        if not (os.path.exists(self.path)):
+            print("¡Error! disco no encontrado.")          
 
     def setName(self, name):
         self.name = name

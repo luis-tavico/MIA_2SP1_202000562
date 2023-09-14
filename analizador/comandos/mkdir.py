@@ -1,11 +1,14 @@
+import os
+
 class Mkdir:
     def __init__(self, path = "", r = False):
         self.path = path
         self.r = r
+        self.username = os.getlogin()
 
     #SET
     def setPath(self, path):
-        self.path = path.replace("user", "luis_tavico").replace('"', "")
+        self.path = path.replace("user", self.username).replace('"', "")
 
     def setR(self, r):
         self.r = r

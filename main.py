@@ -1,9 +1,15 @@
 from analizador.gramatica import analizador
 
 if __name__ == '__main__':
-    #execute -path=/home/luis_tavico/Escritorio/prueba.adsj
-    #execute -path="/home/luis_tavico/Escritorio/prueba2.adsj"
-    #rep -path=/home/luis_tavico/Escritorio/Disco1.dsk
+    #mkdisk -size=2 -unit=K -path=/home/user/Escritorio/Disco1.dsk
+    #mkdisk -size=1 -unit=K -path=/home/user/Escritorio/Discos/Disco2.dsk
+    #rmdisk -path=/home/user/Escritorio/Disco1.dsk
+    #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part1 -unit=B -size=200
+    #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part2 -unit=B -size=300
+    #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part3 -unit=B -size=125
+    #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part4 -unit=B -size=250
+    #mount -path=/home/user/Escritorio/Disco1.dsk -name=Part2
+    #unmount -id=623Disco1
     #AQUI EMPIEZA EL DOC
     #mkfile -size=15 -path=/home/user/Escritorio/a.txt -r
     #mkfile -size=10 -path=/home/user/Escritorio/b.txt -r
@@ -14,6 +20,9 @@ if __name__ == '__main__':
     #mkdir -r -path=/home/user/Escritorio/usac
     #copy -path="/home/user/Escritorio/b.txt" -destino="/home/user/Escritorio/usac"
     #move -path="/home/user/Escritorio/c.txt" -destino=/home/user/Escritorio/usac
+    #execute -path=/home/user/Escritorio/prueba.adsj
+    #chgrp -user=user1 -grp=invitados
+    #rep -path=/home/user/Escritorio/Disco1.dsk
     while True:
         entrada = input("App> ")
         if entrada == 'exit': break

@@ -10,7 +10,6 @@ class Mbr:
         #self.fecha_creacion = int(round(fecha_creacion.timestamp()))
         self.dsk_signature = dsk_signature
         self.fit = fit
-        #self.partitions = [Partition("I", "P", "W", 0, 0, "partition1"), Partition("I", "P", "W", 0, 0, "partition2"), Partition("I", "P", "W", 0, 0, "partition3"), Partition("I", "P", "W", 0, 0, "partition4")]
         self.partitions = [Partition(), Partition(), Partition(), Partition()]
 
 
@@ -53,22 +52,23 @@ class Mbr:
         return cls(tamano, fecha_creacion, dsk_signature, fit.decode())
     
     def getLength(self):
-        return 21
+        return struct.calcsize('iqic')
 
 '''
 from datetime import datetime
 curr_dt = datetime.now()
 timestamp = int(round(curr_dt.timestamp()))
 
-mbr = Mbr(3000000, timestamp, 430, "F")
+mbr = Mbr(1, timestamp, 2, "F")
 pack = mbr.pack_data()
 print(pack)
 unpack = mbr.unpack_data(pack)
 print(unpack)
+print(mbr.getLength())
 #date = unpack.getFecha_creacion()
 #timestamp_datetime = datetime.fromtimestamp(date)
 #print(timestamp_datetime)
 
-for partition in unpack.getPartitions():
-    print(partition.getPart_name())
+#for partition in unpack.getPartitions():
+#    print(partition.getPart_name())
 '''

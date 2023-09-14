@@ -1,4 +1,6 @@
 1, G, root
 1, U, root, root, 123
-0, G, usuarios
-0, U, usuarios, user1, usuario
+2, G, usuarios
+3, U, invitados user1, usuario
+3, G, invitados
+3, U, invitados, usuario1, abc

@@ -16,8 +16,10 @@ from analizador.comandos.mbr import Mbr
 from analizador.comandos.mkdir import Mkdir
 from analizador.comandos.mkdisk import Mkdisk
 from analizador.comandos.mkfile import Mkfile
+from analizador.comandos.mkfs import Mkfs
 from analizador.comandos.mkgrp import Mkgrp
 from analizador.comandos.mkusr import Mkusr
+from analizador.comandos.mount import Mount
 from analizador.comandos.move import Move
 from analizador.comandos.partition import Partition
 from analizador.comandos.rename import Rename
@@ -25,9 +27,11 @@ from analizador.comandos.remove import Remove
 from analizador.comandos.rmdisk import Rmdisk
 from analizador.comandos.rmgrp import Rmgrp
 from analizador.comandos.rmusr import Rmusr
+from analizador.comandos.unmount import Unmount
 
-global comando, script, usuario_actual
+global comando, script, usuario_actual, particiones_montadas
 usuario_actual = ""
+particiones_montadas = {}
 
 def comando_activar(valor):
     global comando, script
@@ -36,10 +40,22 @@ def comando_activar(valor):
     #comandos de discos
     if (comando.lower() == "mkdisk"):
         script = Mkdisk()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando mkdisk..."))
     elif (comando.lower() == "rmdisk"):
         script = Rmdisk()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando rmdisk..."))
     elif (comando.lower() == "fdisk"):
         script = Fdisk()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando fdisk..."))
+    elif (comando.lower() == "mount"):
+        script = Mount()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando mount..."))
+    elif (comando.lower() == "unmount"):
+        script = Unmount()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando unmount..."))
+    elif (comando.lower() == "mkfs"):
+        script = Mkfs()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando mkfs..."))
     #comandos de usuarios y grupos
     elif (comando.lower() == "login"):
         script = Login()
@@ -79,19 +95,24 @@ def comando_activar(valor):
         script = Chmod()
     elif (comando.lower() == "execute"):
         script = Execute()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando execute..."))
 
 
 def comando_ejecutar(parametro, valor):
-    global comando, script, usuario_actual
+    global comando, script, usuario_actual, particiones_montadas
     #COMANDO MKDISK
     if (comando == "mkdisk"):
         if (parametro == 'size'):
+            print("leyendo tamaño del disco...")
             script.setSize(int(valor))
         elif (parametro == 'path'):
+            print("leyendo ruta del disco...")
             script.setPath(valor)
         elif (parametro == 'fit'):
+            print("leyendo ajuste del disco...")
             script.setFit(valor)
         elif (parametro == 'unit'):
+            print("leyendo unidad del disco...")
             script.setUnit(valor)
         elif (parametro == "ejecutar"):
             if (script.errors == 0):
@@ -118,38 +139,55 @@ def comando_ejecutar(parametro, valor):
                         archivo.seek(pos)
                         archivo.write(particion.pack_data())
                     pos += 28
-                print('¡Disco creado exitosamente!')
+                print("\033[1;32m<<Success>> {}\033[00m" .format("Disco creado exitosamente."))
+                print("\033[36m<<System>> {}\033[00m" .format("...Comando mkdisk ejecutado"))
             else: 
-                print('¡Error! no se pudo crear el disco.')
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear el disco."))
         else:
-            print("¡Error! parametro no valido.")
+            script.errors += 1
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     #COMANDO RMDISK
     elif (comando == "rmdisk"):
-        if (parametro == 'path'):      
+        if (parametro == 'path'):   
+            print("leyendo ruta del disco...")   
             script.setPath(valor)
         elif (parametro == 'ejecutar'):
             if (script.errors == 0):
                 script.deleteDisk()
-            else: 
-                print('¡Error! no se pudo eliminar el disco.')
+                print("\033[36m<<System>> {}\033[00m" .format("...Comando rmdisk ejecutado"))
+            else:
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo eliminar el disco."))
         else:
-            print("¡Error! parametro no valido.")
+            script.errors += 1
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     #COMANDO FDISK
     elif (comando == 'fdisk'):
         if (parametro == 'size'):
+            print("leyendo tamaño de la particion...")
             script.setSize(int(valor))
         elif (parametro == 'path'):
+            print("leyendo ruta del disco...")
             script.setPath(valor)
         elif (parametro == 'name'):
+            print("leyendo nombre de la particion...")
             script.setName(valor)
         elif (parametro == 'unit'):
+            print("leyendo unidad de la particion...")
             script.setUnit(valor)
         elif(parametro == 'type'):
+            print("leyendo tipo de la particion...")
             script.setType(valor)
         elif(parametro == 'fit'):
+            print("leyendo ajuste de la particion...")
             script.setFit(valor)
+        elif(parametro == 'delete'):
+            print("eliminando particion...")
+            script.delete(valor)
+        elif(parametro == 'add'):
+            print("agregando espacio a particion...")
+            script.add(valor)
         elif (parametro == 'ejecutar'):
             #obtener mbr
             mbr = Mbr()
@@ -182,7 +220,7 @@ def comando_ejecutar(parametro, valor):
                 if (mbr.getFit() == 'BF'):
                     diferencia_minima = float('inf')
                     for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status == "I"):
+                        if (partition.getPart_status == "0"):
                             diferencia = partition.getPart_s() - script.getSize()
                             if diferencia >= 0 and diferencia < diferencia_minima:
                                 pos_particion = i
@@ -191,14 +229,14 @@ def comando_ejecutar(parametro, valor):
                             pos_en_disco += partition.getPart_s()
                 elif (mbr.getFit() == 'FF'):
                     for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status() == "I"):
+                        if (partition.getPart_status() == "0"):
                             if partition.getPart_s() >= script.getSize():
                                 pos_particion = i
                         else:
                             pos_en_disco += partition.getPart_s()
                 elif (mbr.getFit() == 'WF'):
                     for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status() == "I"):
+                        if (partition.getPart_status() == "0"):
                             if (partition.getPart_s() >= script.getSize() and partition.getPart_s() >= temp):
                                 pos_particion = i
                                 temp = partition.getPart_s()
@@ -206,7 +244,7 @@ def comando_ejecutar(parametro, valor):
                             pos_en_disco += partition.getPart_s()
                 if (pos_particion == None):
                     for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status() == "I"):
+                        if (partition.getPart_status() == "0"):
                             if (partition.getPart_s() == 0):
                                 pos_particion = i
                                 break                           
@@ -243,34 +281,96 @@ def comando_ejecutar(parametro, valor):
                 else: 
                     print('Las 4 particiones permitidas, ya han sido usadas.')
         else:
-            print("¡Error! parametro no valido.")
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     #cOMANDO MOUNT
     elif (comando == 'mount'):
         if (parametro == 'path'):
-            pass
+            print("leyendo ruta del disco...")
+            script.setPath(valor)
         elif (parametro == 'name'):
-            pass
+            print("leyendo nombre de la particion...")
+            script.setName(valor)
+        elif (parametro == 'ejecutar'):
+            if (script.errors == 0):
+                #obtener mbr
+                mbr = Mbr()
+                with open(script.getPath(), 'rb+') as archivo:
+                    archivo.seek(0)
+                    contenido = archivo.read(mbr.getLength())
+                mbr = mbr.unpack_data(contenido)
+                #obtener particiones
+                pos = mbr.getLength()
+                for i in range(4):
+                    particion = Partition()
+                    with open(script.getPath(), 'rb+') as archivo:
+                        archivo.seek(pos)
+                        contenido = archivo.read(particion.getLength())
+                    particion = particion.unpack_data(contenido)
+                    mbr.getPartitions()[i] = particion
+                    pos += particion.getLength()
+                #buscar particion
+                num_particion = -1
+                particionMontada = Partition()
+                for i, partition in enumerate(mbr.getPartitions()):
+                    if (partition.getPart_name().rstrip("\x00") == script.getName()):
+                        num_particion = i+1
+                        particionMontada = partition
+                        break
+                if (num_particion == -1):
+                    script.errors += 1
+                    print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
+                else:
+                    id = "62" + str(num_particion) + os.path.splitext(os.path.basename(script.getPath()))[0]
+                    if not(id in particiones_montadas):   
+                        particiones_montadas[id] = particionMontada
+                        print("Particiones montadas:")
+                        for clave, valor in particiones_montadas.items():
+                            print(clave)
+                        print("\033[1;32m<<Success>> {}\033[00m" .format("Particion montada exitosamente."))
+                        print("\033[36m<<System>> {}\033[00m" .format("...Comando mount ejecutado"))
+                    else:
+                        script.errors += 1
+                        print("\033[91m<<Error>> {}\033[00m" .format("La particion ya esta montada."))
+            if (script.errors != 0):
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo montar la particion."))
         else:
-            print("¡Error! parametro no valido.")
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     #COMANDO UNMOUNT
     elif (comando == 'unmount'):
         if (parametro == 'id'):
-            pass
+            print("leyendo id de la particion...")
+            script.setId(valor)
+        elif (parametro == 'ejecutar'):
+            if script.getId() in particiones_montadas:   
+                particiones_montadas.pop(script.getId())
+                print("\033[1;32m<<Success>> {}\033[00m" .format("Particion desmontada exitosamente."))
+                print("\033[36m<<System>> {}\033[00m" .format("...Comando unmount ejecutado"))
+            else:
+                print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo desmontar la particion."))
         else:
-            print("¡Error! parametro no valido.")
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     #COMANDO MKFS
     elif (comando == 'mkfs'):
         if (parametro == 'id'):
-            pass
+            print("leyendo id de la particion...")
+            script.setId(valor)
         elif (parametro == 'type'):
-            pass
+            print("leyendo tipo de formateo...")
+            script.setType(valor)
         elif (parametro == 'fs'):
-            pass
+            print("leyendo sistema de fichero...")
+            script.setFs(valor)
+        elif (parametro == 'ejecutar'):
+            if script.getId() in particiones_montadas:
+                pass
+            else:
+                print("¡Error! la particion no existe.")
         else:
-            print("¡Error! parametro no valido.")
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     #COMANDO LOGIN
     elif (comando == 'login'):
@@ -695,7 +795,36 @@ def comando_ejecutar(parametro, valor):
         elif (parametro == 'grp'):
             script.setGrp(valor)
         elif (parametro == 'ejecutar'):
-            pass
+            usuario_existe = False
+            grupo_existe = False
+            cont = ""
+            gid = None
+            pos = None
+            #leer archivo users.txt
+            with open("users.txt", "r") as archivo:
+                lineas = archivo.readlines()
+            for i, linea in enumerate(lineas):
+                usuario_grupo = linea.strip().split(", ")
+                if (usuario_grupo[1] == "G"):
+                    if (script.getGrp() in usuario_grupo):
+                        grupo_existe = True
+                        gid = usuario_grupo[0]
+                if (usuario_grupo[1] == "U"):
+                    if (script.getUser() in usuario_grupo):
+                        cont = usuario_grupo[3] + ", " + usuario_grupo[4] + "\n"
+                        usuario_existe = True
+                        pos = i
+            if (grupo_existe):
+                if (usuario_existe):
+                    lineas[pos] = gid + ", U, " + script.getGrp() + " " + cont
+                    #escribir las líneas de nuevo en el archivo
+                    with open("users.txt", 'w') as archivo:
+                        archivo.writelines(lineas)
+                    print("¡Usuario cambiado de grupo exitosamente!")
+                else:
+                    print("¡Error! el usuario a cambiar no existe")
+            else:
+                print("¡Error! el grupo no existe")
         else:
             print("¡Error! parametro no valido.")
         return None
@@ -715,7 +844,7 @@ def comando_ejecutar(parametro, valor):
     #COMANDO PAUSE
     elif (comando == 'pause'):
         while True: 
-            tecla = input("Presione 'ENTER' para continuar ")
+            tecla = input("\033[1;33m<<Confirm>> {}\033[00m\n" .format("Presione 'ENTER' para continuar "))
             if (tecla == ""):
                 break
         return None
@@ -724,21 +853,24 @@ def comando_ejecutar(parametro, valor):
         if (parametro == "path"):
             script.setPath(valor)
         elif (parametro == 'ejecutar'):
-            if os.path.exists(script.getPath()):
+            if script.errors == 0:
                 with open(script.getPath(), 'r') as archivo:
                     contenido = archivo.read()
+                print("\033[36m<<System>> {}\033[00m" .format("...Comando execute ejecutado"))
                 return contenido
             else:
-                print("¡Error! archivo no encontrado.")
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo ejecutar el archivo."))
         else:
-            print("¡Error! parametro no valido.")
+            script.errors += 1
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     #COMANDO REP
     elif (comando == "rep"):
         if (parametro == "path"):
+            path = valor.replace("user", os.getlogin()).replace('"', "")
             #obtener mbr
             mbr = Mbr()
-            with open(valor, 'rb+') as archivo:
+            with open(path, 'rb+') as archivo:
                 archivo.seek(0)
                 contenido = archivo.read(mbr.getLength())
             mbr = mbr.unpack_data(contenido)
@@ -746,7 +878,7 @@ def comando_ejecutar(parametro, valor):
             pos = 21
             for i in range(4):
                 particion = Partition()
-                with open(valor, 'rb+') as archivo:
+                with open(path, 'rb+') as archivo:
                     archivo.seek(pos)
                     contenido = archivo.read(28)
                 particion = particion.unpack_data(contenido)
@@ -764,7 +896,9 @@ def comando_ejecutar(parametro, valor):
                 print(partition.getPart_start())
                 print(partition.getPart_s())
                 print(partition.getPart_name())
-
+        return None
+    elif (comando[0] == "#"):
+        print("\033[90m<<Comment>> {}\033[00m".format(comando[1:]))
         return None
 
 #FUNCIONES
@@ -772,3 +906,10 @@ def generarCodigo():
     code = list(range(1001, 1030))
     random.shuffle(code)
     return code.pop()
+
+#convertir a binario
+'''
+name = struct.pack('16s', script.getName().encode('utf-8'))
+name = struct.unpack('16s', name)
+name = name[0].decode('utf-8')
+'''
