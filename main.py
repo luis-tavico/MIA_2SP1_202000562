@@ -8,6 +8,7 @@ if __name__ == '__main__':
     #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part2 -unit=B -size=300
     #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part3 -unit=B -size=125
     #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part4 -unit=B -size=250
+    #fdisk -delete=full -name=Part1 -path=/home/user/Escritorio/Disco1.dsk
     #mount -path=/home/user/Escritorio/Disco1.dsk -name=Part2
     #unmount -id=623Disco1
     #AQUI EMPIEZA EL DOC

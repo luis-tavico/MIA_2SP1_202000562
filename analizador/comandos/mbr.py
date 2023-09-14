@@ -53,6 +53,7 @@ class Mbr:
     
     def getLength(self):
         return struct.calcsize('iqic')
+        #devuelve 21
 
 '''
 from datetime import datetime

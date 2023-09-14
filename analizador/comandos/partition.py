@@ -58,6 +58,7 @@ class Partition:
     
     def getLength(self):
         return struct.calcsize('cccii16s')
+        #devuelve 28
 
 '''
 part = Partition("I", "P", "W", 1500, 3000, "particion1")

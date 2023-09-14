@@ -184,10 +184,10 @@ def comando_ejecutar(parametro, valor):
             script.setFit(valor)
         elif(parametro == 'delete'):
             print("eliminando particion...")
-            script.delete(valor)
+            script.setDelete(valor)
         elif(parametro == 'add'):
             print("agregando espacio a particion...")
-            script.add(valor)
+            script.setAdd(valor)
         elif (parametro == 'ejecutar'):
             if (script.errors == 0):
                 #obtener mbr
@@ -209,11 +209,15 @@ def comando_ejecutar(parametro, valor):
                 #eliminar particion
                 if (script.getDelete().lower() == "full"):
                     for partition in mbr.getPartitions():
-                        if (partition.getPart_name() == script.getName()):
-                            with open(script.getPath(), 'wb') as archivo:
+                        if (partition.getPart_name().rstrip("\x00") == script.getName()):
+                            content = ""
+                            for i in range (0, partition.getPart_s()):
+                                content += '\x00'
+                            print(content)
+                            with open(script.getPath(), 'rb+') as archivo:
                                 archivo.seek(partition.getPart_start())
-                                for i in range(0, partition.getPart_s()):
-                                    archivo.write(b'\x00')
+                                archivo.write(b'aqui\x00\x00\x00\x00\x00')
+                            print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
                             return None
                     script.errors += 1
                     print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
@@ -244,7 +248,7 @@ def comando_ejecutar(parametro, valor):
                 if (script.errors == 0):
                 #if (script.getType() == "P" or script.getType() == "E"):
                     temp = 0
-                    pos_en_disco = 21
+                    pos_en_disco = 21 + 4 * 28
                     pos_particion = None
                     if (mbr.getFit() == 'BF'):
                         diferencia_minima = float('inf')
@@ -300,19 +304,19 @@ def comando_ejecutar(parametro, valor):
                         with open(script.getPath(), 'rb+') as archivo:
                             archivo.write(mbr.pack_data())
                         #escribir particiones
-                        pos = 21
+                        pos = mbr.getLength()
                         for particion in mbr.getPartitions():
                             with open(script.getPath(), 'rb+') as archivo:
                                 archivo.seek(pos)
                                 archivo.write(particion.pack_data())
-                                pos += 28
+                            pos += particion.getLength()
                         print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
                         print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
                     else:
                         script.errors += 1
                         print("\033[91m<<Error>> {}\033[00m" .format("Las 4 particiones permitidas, ya han sido usadas."))
             if (script.errors != 0):
-                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear la particion."))
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear/eliminar/extender la particion."))
         else:
             print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
