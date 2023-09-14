@@ -133,12 +133,12 @@ def comando_ejecutar(parametro, valor):
                 with open(script.getPath(), 'rb+') as archivo:
                     archivo.write(mbr.pack_data())
                 #escribir particiones
-                pos = 21
+                pos = mbr.getLength()
                 for particion in mbr.getPartitions():
                     with open(script.getPath(), 'rb+') as archivo:
                         archivo.seek(pos)
                         archivo.write(particion.pack_data())
-                    pos += 28
+                    pos += particion.getLength()
                 print("\033[1;32m<<Success>> {}\033[00m" .format("Disco creado exitosamente."))
                 print("\033[36m<<System>> {}\033[00m" .format("...Comando mkdisk ejecutado"))
             else: 
@@ -189,97 +189,130 @@ def comando_ejecutar(parametro, valor):
             print("agregando espacio a particion...")
             script.add(valor)
         elif (parametro == 'ejecutar'):
-            #obtener mbr
-            mbr = Mbr()
-            with open(script.getPath(), 'rb+') as archivo:
-                archivo.seek(0)
-                contenido = archivo.read(mbr.getLength())
-            mbr = mbr.unpack_data(contenido)
-            #obtener particiones
-            pos = 21
-            for i in range(4):
-                particion = Partition()
+            if (script.errors == 0):
+                #obtener mbr
+                mbr = Mbr()
                 with open(script.getPath(), 'rb+') as archivo:
-                    archivo.seek(pos)
-                    contenido = archivo.read(28)
-                particion = particion.unpack_data(contenido)
-                mbr.getPartitions()[i] = particion
-                pos += 28
-            #crear particion
-            nombre_existe = False
-            temp = 0
-            for partition in mbr.getPartitions():
-                if (partition.getPart_name() == script.getName()):
-                    nombre_existe = True
-                    break
-            if (nombre_existe) :
-                print("¡Error! el valor del parametro 'name' ya existe.")
-            else:
-                pos_en_disco = 21
-                pos_particion = None
-                if (mbr.getFit() == 'BF'):
-                    diferencia_minima = float('inf')
-                    for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status == "0"):
-                            diferencia = partition.getPart_s() - script.getSize()
-                            if diferencia >= 0 and diferencia < diferencia_minima:
-                                pos_particion = i
-                                diferencia_minima = diferencia
-                        else:
-                            pos_en_disco += partition.getPart_s()
-                elif (mbr.getFit() == 'FF'):
-                    for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status() == "0"):
-                            if partition.getPart_s() >= script.getSize():
-                                pos_particion = i
-                        else:
-                            pos_en_disco += partition.getPart_s()
-                elif (mbr.getFit() == 'WF'):
-                    for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status() == "0"):
-                            if (partition.getPart_s() >= script.getSize() and partition.getPart_s() >= temp):
-                                pos_particion = i
-                                temp = partition.getPart_s()
-                        else:
-                            pos_en_disco += partition.getPart_s()
-                if (pos_particion == None):
-                    for i, partition in enumerate(mbr.getPartitions()):
-                        if (partition.getPart_status() == "0"):
-                            if (partition.getPart_s() == 0):
-                                pos_particion = i
-                                break                           
-                        else:
-                            pos_en_disco += partition.getPart_s()
-
-                
-                if (pos_particion != None):
-                    mbr.getPartitions()[pos_particion].setPart_status("A")
-                    #mbr.getPartitions()[pos_particion].setPart_type(disk.getType())
-                    mbr.getPartitions()[pos_particion].setPart_type('P')
-                    #mbr.getPartitions()[pos_particion].setPart_fit(disk.getFit())
-                    mbr.getPartitions()[pos_particion].setPart_fit("B")
-                    #print(mbr.getPartitions()[pos_particion].getPart_fit())
-                    mbr.getPartitions()[pos_particion].setPart_start(pos_en_disco)
-                    if (script.unit == "M"):
-                        mbr.getPartitions()[pos_particion].setPart_s(script.getSize()*1024*1024)
-                    elif (script.unit == "K"):
-                        mbr.getPartitions()[pos_particion].setPart_s(script.getSize()*1024)
-                    else:
-                        mbr.getPartitions()[pos_particion].setPart_s(script.getSize())
-                    mbr.getPartitions()[pos_particion].setPart_name(script.getName())
-                    #escribir mbr
+                    archivo.seek(0)
+                    contenido = archivo.read(mbr.getLength())
+                mbr = mbr.unpack_data(contenido)
+                #obtener particiones
+                pos = mbr.getLength()
+                for i in range(4):
+                    particion = Partition()
                     with open(script.getPath(), 'rb+') as archivo:
-                        archivo.write(mbr.pack_data())
-                    #escribir particiones
-                    pos = 21
-                    for particion in mbr.getPartitions():
+                        archivo.seek(pos)
+                        contenido = archivo.read(particion.getLength())
+                    particion = particion.unpack_data(contenido)
+                    mbr.getPartitions()[i] = particion
+                    pos += particion.getLength()
+                #eliminar particion
+                if (script.getDelete().lower() == "full"):
+                    for partition in mbr.getPartitions():
+                        if (partition.getPart_name() == script.getName()):
+                            with open(script.getPath(), 'wb') as archivo:
+                                archivo.seek(partition.getPart_start())
+                                for i in range(0, partition.getPart_s()):
+                                    archivo.write(b'\x00')
+                            return None
+                    script.errors += 1
+                    print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
+                #verificar si nombre existe
+                for partition in mbr.getPartitions():
+                    if (partition.getPart_name() == script.getName()):
+                        script.errors += 1
+                        print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'name' ya existe."))
+                        break
+                #verificar tipo de particion
+                if (script.getType().lower() == "e"):
+                    for partition in mbr.getPartitions():
+                        if (partition.getPart_type().lower() == "e"):
+                            script.errors += 1
+                            print("\033[91m<<Error>> {}\033[00m" .format("Ya existe una particion extendida."))
+                            break
+                elif (script.getType().lower() == "l"):
+                    extendida_existe = False
+                    for partition in mbr.getPartitions():
+                        if (partition.getPart_type().lower() == "e"):
+                            extendida_existe = True
+                            break
+                    if not(extendida_existe):
+                        script.errors += 1
+                        print("\033[91m<<Error>> {}\033[00m" .format("No existe una particion extendida."))
+
+
+                if (script.errors == 0):
+                #if (script.getType() == "P" or script.getType() == "E"):
+                    temp = 0
+                    pos_en_disco = 21
+                    pos_particion = None
+                    if (mbr.getFit() == 'BF'):
+                        diferencia_minima = float('inf')
+                        for i, partition in enumerate(mbr.getPartitions()):
+                            if (partition.getPart_status == "0"):
+                                diferencia = partition.getPart_s() - script.getSize()
+                                if diferencia >= 0 and diferencia < diferencia_minima:
+                                    pos_particion = i
+                                    diferencia_minima = diferencia
+                            else:
+                                pos_en_disco += partition.getPart_s()
+                    elif (mbr.getFit() == 'FF'):
+                        for i, partition in enumerate(mbr.getPartitions()):
+                            if (partition.getPart_status() == "0"):
+                                if partition.getPart_s() >= script.getSize():
+                                    pos_particion = i
+                            else:
+                                pos_en_disco += partition.getPart_s()
+                    elif (mbr.getFit() == 'WF'):
+                        for i, partition in enumerate(mbr.getPartitions()):
+                            if (partition.getPart_status() == "0"):
+                                if (partition.getPart_s() >= script.getSize() and partition.getPart_s() >= temp):
+                                    pos_particion = i
+                                    temp = partition.getPart_s()
+                            else:
+                                pos_en_disco += partition.getPart_s()
+                    if (pos_particion == None):
+                        for i, partition in enumerate(mbr.getPartitions()):
+                            if (partition.getPart_status() == "0"):
+                                if (partition.getPart_s() == 0):
+                                    pos_particion = i
+                                    break                           
+                            else:
+                                pos_en_disco += partition.getPart_s()
+
+                    
+                    if (pos_particion != None):
+                        mbr.getPartitions()[pos_particion].setPart_status("A")
+                        #mbr.getPartitions()[pos_particion].setPart_type(disk.getType())
+                        mbr.getPartitions()[pos_particion].setPart_type('P')
+                        #mbr.getPartitions()[pos_particion].setPart_fit(disk.getFit())
+                        mbr.getPartitions()[pos_particion].setPart_fit("B")
+                        #print(mbr.getPartitions()[pos_particion].getPart_fit())
+                        mbr.getPartitions()[pos_particion].setPart_start(pos_en_disco)
+                        if (script.unit == "M"):
+                            mbr.getPartitions()[pos_particion].setPart_s(script.getSize()*1024*1024)
+                        elif (script.unit == "K"):
+                            mbr.getPartitions()[pos_particion].setPart_s(script.getSize()*1024)
+                        else:
+                            mbr.getPartitions()[pos_particion].setPart_s(script.getSize())
+                        mbr.getPartitions()[pos_particion].setPart_name(script.getName())
+                        #escribir mbr
                         with open(script.getPath(), 'rb+') as archivo:
-                            archivo.seek(pos)
-                            archivo.write(particion.pack_data())
-                            pos += 28
-                    print('¡Particion creada exitosamente!')
-                else: 
-                    print('Las 4 particiones permitidas, ya han sido usadas.')
+                            archivo.write(mbr.pack_data())
+                        #escribir particiones
+                        pos = 21
+                        for particion in mbr.getPartitions():
+                            with open(script.getPath(), 'rb+') as archivo:
+                                archivo.seek(pos)
+                                archivo.write(particion.pack_data())
+                                pos += 28
+                        print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
+                        print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                    else:
+                        script.errors += 1
+                        print("\033[91m<<Error>> {}\033[00m" .format("Las 4 particiones permitidas, ya han sido usadas."))
+            if (script.errors != 0):
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear la particion."))
         else:
             print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None

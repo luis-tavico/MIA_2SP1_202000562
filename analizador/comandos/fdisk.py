@@ -2,7 +2,7 @@ import os
 import struct
 
 class Fdisk:
-    def __init__(self, size = 0, path = "", name = "",  unit = "K", type = "P", fit = "WF", delete = "FULL", add = 0):
+    def __init__(self, size = 0, path = "", name = "",  unit = "K", type = "P", fit = "WF", delete = "", add = 0):
         self.size = size
         self.path = path
         self.name = name
@@ -20,13 +20,14 @@ class Fdisk:
             self.size = size
         else:
             self.errors += 1
-            print("¡Error! el valor del parametro 'size' debe ser mayor a 0.")
-
+            print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'size' debe ser mayor a 0."))
 
     def setPath(self, path):
         self.path = path.replace("user", self.username).replace('"', "")
-        if not (os.path.exists(self.path)):
-            print("¡Error! disco no encontrado.")          
+        if not (os.path.exists(self.path)): 
+            self.errors += 1  
+            print("\033[91m<<Error>> {}\033[00m" .format("Disco no encontrado."))
+    
 
     def setName(self, name):
         self.name = name
@@ -40,7 +41,7 @@ class Fdisk:
             self.unit = unit
         else:
             self.errors += 1
-            print("¡Error! el valor del parametro 'unit' debe ser 'B', 'K' o 'M'.")
+            print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'unit' debe ser 'B', 'K' o 'M'."))
 
     def setType(self, type):
         if (type == "P"):
@@ -51,7 +52,7 @@ class Fdisk:
             self.type = type
         else:
             self.errors += 1
-            print("¡Error! el valor del parametro 'type' debe ser 'P', 'E' o 'L'.")
+            print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'type' debe ser 'P', 'E' o 'L'."))
 
     def setFit(self, fit):
         if (fit == "BF"):
@@ -62,13 +63,12 @@ class Fdisk:
             self.fit = fit
         else:
             self.errors += 1
-            print("¡Error! el valor del parametro 'fit' debe ser 'BF', 'FF' o 'WF'.")
+            print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'fit' debe ser 'BF', 'FF' o 'WF'."))
 
-
-    def delete(self, delete):
+    def setDelete(self, delete):
         self.delete = delete
 
-    def add(self, add):
+    def setAdd(self, add):
         self.add = add
 
     #GET
@@ -90,13 +90,8 @@ class Fdisk:
     def getFit(self):
         return self.fit
     
-    def pack_data(self):
-        return struct.pack('q50s15s2s', self.size, self.path.encode(), self.name.encode(), self.unit.encode())
-
-    @classmethod
-    def unpack_data(cls, data_bytes):
-        size, path, name,  unit = struct.unpack('q50s15s2s', data_bytes)
-        return cls(size, path.decode(), name.decode(),  unit.decode())
+    def getDelete(self):
+        return self.delete
     
-    def getLength(self):
-        return 75
+    def getAdd(self):
+        return self.add

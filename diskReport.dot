@@ -1,0 +1,7 @@
+digraph Disk {
+    subgraph cluster_0 {
+        bgcolor="#68d9e2"
+        node [style="rounded" style=filled];
+        node_D [shape=record label="MBR|Libre|{Extendida|{EBR|LOGICA|EBR|LOGICA}}|PArticion"];
+    }
+}

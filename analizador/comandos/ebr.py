@@ -48,7 +48,6 @@ class Ebr:
         return self.part_name
     
     #Empaquetar_Desempaquetar
-    
     def pack_data(self):
         return struct.pack('cciii16s', self.part_status.encode(), self.part_fit.encode(), self.part_start, self.part_s, self.part_next, self.part_name.encode())
 
@@ -58,12 +57,13 @@ class Ebr:
         return cls(part_status.decode(), part_fit.decode(), part_start, part_s, part_next, part_name.decode())
     
     def getLength(self):
-        return 30
+        return struct.calcsize('cciii16s')
     
-
+'''
 part = Ebr("A", "P", 1500, 3000, 12345, "particion_1")
 pack = part.pack_data()
 print(pack)
 unpack = part.unpack_data(pack)
 print(unpack)
 print(unpack.getPart_name())
+'''

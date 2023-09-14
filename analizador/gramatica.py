@@ -39,6 +39,9 @@ reserved_words = {
     'fit': 'FIT',
     'unit': 'UNIT',
     'name' : 'NAME',
+    'type' : 'TYPE',
+    'delete' : 'DELETE',
+    'add' : 'ADD',
     'user': 'USER',
     'pass': 'PASS',
     'id': 'ID',
@@ -201,7 +204,10 @@ def p_param(t):
              | PATH
              | FIT
              | UNIT
-             | NAME 
+             | NAME
+             | TYPE
+             | DELETE
+             | ADD
              | USER
              | PASS
              | ID
