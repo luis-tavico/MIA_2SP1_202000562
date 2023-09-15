@@ -401,14 +401,62 @@ def comando_ejecutar(parametro, valor):
                                 particion_extendida = partition
                                 break
                         inicio = particion_extendida.getPart_start()
-                        size = particion_extendida.getPart_s()
+                        #size = particion_extendida.getPart_s()
                         #obtener ebr
                         ebr = Ebr()
                         with open(script.getPath(), 'rb+') as archivo:
                             archivo.seek(inicio)
                             contenido = archivo.read(ebr.getLength())
                         ebr = ebr.unpack_data(contenido)
- 
+                        if (ebr.getPart_s() == 0):
+                            ebr.setPart_status("1")
+                            ebr.setPart_fit(script.getFit()[0])
+                            ebr.setPart_start(inicio+ebr.getLength())
+                            ebr.setPart_s(int(script.getSize()))
+                            ebr.setPart_next(-1)
+                            ebr.setPart_name(script.getName())
+                            #escribir ebr
+                            with open(script.getPath(), 'rb+') as archivo:
+                                archivo.seek(inicio)
+                                archivo.write(ebr.pack_data())
+                            print(inicio)
+                            print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
+                            print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                            return None
+                        else:
+                            puntero = inicio
+                            while True:
+                                if (ebr.getPart_next() == -1):
+                                    ebr.setPart_next(ebr.getPart_start() + ebr.getPart_s())
+                                    #escribir ebr
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.seek(puntero)
+                                        archivo.write(ebr.pack_data())
+                                    print(puntero)
+                                    puntero += ebr.getLength() + ebr.getPart_s()   
+                                    ebr = Ebr()
+                                    ebr.setPart_status("1")
+                                    ebr.setPart_fit(script.getFit()[0])
+                                    ebr.setPart_start(puntero+ebr.getLength())
+                                    ebr.setPart_s(int(script.getSize()))
+                                    ebr.setPart_next(-1)
+                                    ebr.setPart_name(script.getName())
+                                    #escribir ebr
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.seek(puntero)
+                                        archivo.write(ebr.pack_data())
+                                    print(puntero)
+                                    print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
+                                    print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                    return None
+                                else:
+                                    puntero = ebr.getPart_start() + ebr.getPart_s()
+                                    #obtener siguiente ebr
+                                    ebr = Ebr()
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.seek(puntero)
+                                        contenido = archivo.read(ebr.getLength())
+                                    ebr = ebr.unpack_data(contenido)
                     
                     if (pos_particion != None):
                         tam_usado = 133
@@ -1175,6 +1223,53 @@ def generarReporteMBR(path, pathReport):
         code += '            <td bgcolor="white" align="center"> part_name </td>\n'
         code += '            <td bgcolor="white" align="left"> ' + mbr.getPartitions()[i].getPart_name().rstrip("\x00") + ' </td>\n'
         code += '        </tr>\n'
+        if (mbr.getPartitions()[i].getPart_type().lower() == "e" ):
+            puntero = mbr.getPartitions()[i].getPart_start()
+            #obtener ebr
+            ebr = Ebr()
+            with open(path, 'rb+') as archivo:
+                archivo.seek(puntero)
+                contenido = archivo.read(ebr.getLength())
+            ebr = ebr.unpack_data(contenido)
+            while True:
+                code += '        <tr>\n'
+                code += '            <td bgcolor="tomato" align="left"><font color="white"> Particion Logica </font></td>\n'
+                code += '            <td bgcolor="tomato" align="left"><font color="white"> </font></td>\n'
+                code += '        </tr>\n'
+                code += '        <tr>\n'
+                code += '            <td bgcolor="white" align="center"> part_status </td>\n'
+                code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_status()) + ' </td>\n'
+                code += '        </tr>\n'
+                code += '        <tr>\n'
+                code += '            <td bgcolor="white" align="center"> part_next </td>\n'
+                code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_next()) + ' </td>\n'
+                code += '        </tr>\n'
+                code += '        <tr>\n'
+                code += '            <td bgcolor="white" align="center"> part_fit </td>\n'
+                code += '            <td bgcolor="white" align="left"> ' + ebr.getPart_fit() + ' </td>\n'
+                code += '        </tr>\n'
+                code += '        <tr>\n'
+                code += '            <td bgcolor="white" align="center"> part_start </td>\n'
+                code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_start()) + ' </td>\n'
+                code += '        </tr>\n'
+                code += '        <tr>\n'
+                code += '            <td bgcolor="white" align="center"> part_size </td>\n'
+                code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_s()) + ' </td>\n'
+                code += '        </tr>\n'
+                code += '        <tr>\n'
+                code += '            <td bgcolor="white" align="center"> part_name </td>\n'
+                code += '            <td bgcolor="white" align="left"> ' + ebr.getPart_name().rstrip("\x00") + ' </td>\n'
+                code += '        </tr>\n'
+                if (ebr.getPart_next() == -1):
+                    break
+                else:
+                    puntero = ebr.getPart_next()
+                    #obtener ebr
+                    ebr = Ebr()
+                    with open(path, 'rb+') as archivo:
+                        archivo.seek(puntero)
+                        contenido = archivo.read(ebr.getLength())
+                    ebr = ebr.unpack_data(contenido)
         pos += particion.getLength()
     code += '        </table>\n'
     code += '    >];\n'

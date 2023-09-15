@@ -24,8 +24,8 @@ if __name__ == '__main__':
     #move -path="/home/user/Escritorio/c.txt" -destino=/home/user/Escritorio/usac
     #execute -path=/home/user/Escritorio/prueba.adsj
     #chgrp -user=user1 -grp=invitados
-    #rep -id=623Disco1 -path=/home/user/Escritorio/reports/reporte1.jpg -name=mbr
-    #rep -id=623Disco1 -path=/home/user/Escritorio/reports/reporte2.png -name=disk
+    #rep -id=624Disco1 -path=/home/user/Escritorio/reports/reporte1.jpg -name=mbr
+    #rep -id=624Disco1 -path=/home/user/Escritorio/reports/reporte2.png -name=disk
     while True:
         entrada = input("App> ")
         if entrada == 'exit': break

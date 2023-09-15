@@ -28,20 +28,20 @@ class Mkdisk:
             print("\033[91m<<Error>> {}\033[00m" .format("El disco ya existe."))
     
     def setFit(self, fit):
-        if (fit == "BF"):
+        if (fit.lower() == "bf"):
             self.fit = fit
-        elif (fit == "FF"):
+        elif (fit.lower() == "ff"):
             self.fit = fit
-        elif (fit == "WF"):
+        elif (fit.lower() == "wf"):
             self.fit = fit
         else:
             self.errors += 1
             print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'fit' debe ser 'BF', 'FF' o 'WF'."))
 
     def setUnit(self, unit):
-        if (unit == 'K'):
+        if (unit.lower() == 'k'):
             self.unit = unit
-        elif (unit == 'M'):
+        elif (unit.lower() == 'm'):
             self.unit = unit
         else:
             self.errors += 1

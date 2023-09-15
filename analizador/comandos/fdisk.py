@@ -33,33 +33,33 @@ class Fdisk:
         self.name = name
 
     def setUnit(self, unit):
-        if (unit == "B"):
+        if (unit.lower() == "b"):
             self.unit = unit
-        elif (unit == "K"):
+        elif (unit.lower() == "k"):
             self.unit = unit
-        elif (unit == "M"):
+        elif (unit.lower() == "m"):
             self.unit = unit
         else:
             self.errors += 1
             print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'unit' debe ser 'B', 'K' o 'M'."))
 
     def setType(self, type):
-        if (type == "P"):
+        if (type.lower() == "p"):
             self.type = type
-        elif (type == "E"):
+        elif (type.lower() == "e"):
             self.type = type
-        elif (type == "L"):
+        elif (type.lower() == "l"):
             self.type = type
         else:
             self.errors += 1
             print("\033[91m<<Error>> {}\033[00m" .format("El valor del parametro 'type' debe ser 'P', 'E' o 'L'."))
 
     def setFit(self, fit):
-        if (fit == "BF"):
+        if (fit.lower() == "bf"):
             self.fit = fit
-        elif (fit == "FF"):
+        elif (fit.lower() == "ff"):
             self.fit = fit
-        elif (fit == "WF"):
+        elif (fit.lower() == "wf"):
             self.fit = fit
         else:
             self.errors += 1
