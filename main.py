@@ -1,7 +1,7 @@
 from analizador.gramatica import analizador
 
 if __name__ == '__main__':
-    #mkdisk -size=2 -unit=K -path=/home/user/Escritorio/Disco1.dsk
+    #mkdisk -size=-2 -unit=K -path=/home/user/Escritorio/Disco1.dsk
     #mkdisk -size=1 -unit=K -path=/home/user/Escritorio/Discos/Disco2.dsk
     #rmdisk -path=/home/user/Escritorio/Disco1.dsk
     #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part1 -unit=B -size=200
@@ -9,6 +9,7 @@ if __name__ == '__main__':
     #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part3 -unit=B -size=125
     #fdisk -path=/home/user/Escritorio/Disco1.dsk -name=Part4 -unit=B -size=250
     #fdisk -delete=full -name=Part1 -path=/home/user/Escritorio/Disco1.dsk
+    #fdisk -add=-10 -path=/home/user/Escritorio/Disco1.dsk -name=Part4 -unit=B
     #mount -path=/home/user/Escritorio/Disco1.dsk -name=Part2
     #unmount -id=623Disco1
     #AQUI EMPIEZA EL DOC
@@ -23,7 +24,8 @@ if __name__ == '__main__':
     #move -path="/home/user/Escritorio/c.txt" -destino=/home/user/Escritorio/usac
     #execute -path=/home/user/Escritorio/prueba.adsj
     #chgrp -user=user1 -grp=invitados
-    #rep -path=/home/user/Escritorio/Disco1.dsk
+    #rep -id=623Disco1 -path=/home/user/reports/reporte1.jpg -name=mbr
+    #rep -id=623Disco1 -path=/home/user/reports/reporte1.txt -name=mbr
     while True:
         entrada = input("App> ")
         if entrada == 'exit': break

@@ -2,6 +2,7 @@ import os
 import random
 from datetime import datetime
 import shutil
+import pygraphviz as pgv
 from analizador.comandos.cat import Cat
 from analizador.comandos.chgrp import Chgrp
 from analizador.comandos.chmod import Chmod
@@ -24,6 +25,7 @@ from analizador.comandos.move import Move
 from analizador.comandos.partition import Partition
 from analizador.comandos.rename import Rename
 from analizador.comandos.remove import Remove
+from analizador.comandos.rep import Rep
 from analizador.comandos.rmdisk import Rmdisk
 from analizador.comandos.rmgrp import Rmgrp
 from analizador.comandos.rmusr import Rmusr
@@ -96,7 +98,9 @@ def comando_activar(valor):
     elif (comando.lower() == "execute"):
         script = Execute()
         print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando execute..."))
-
+    elif (comando.lower() == "rep"):
+        script = Rep()
+        print("\033[36m<<System>> {}\033[00m" .format("Ejecutando comando rep..."))
 
 def comando_ejecutar(parametro, valor):
     global comando, script, usuario_actual, particiones_montadas
@@ -125,10 +129,13 @@ def comando_ejecutar(parametro, valor):
                         archivo.write(b'\x00' * 1024)
                 #crear mbr
                 mbr = Mbr()
-                mbr.setTamano(script.getSize())
+                if (script.getUnit() == "M"):
+                    mbr.setTamano(script.getSize()*1024*1024)
+                else:
+                    mbr.setTamano(script.getSize()*1024)
                 mbr.setFecha_creacion(datetime.now())
                 mbr.setDsk_signature(generarCodigo())
-                mbr.setFit('F')
+                mbr.setFit(script.getFit()[0])
                 #escribir mbr
                 with open(script.getPath(), 'rb+') as archivo:
                     archivo.write(mbr.pack_data())
@@ -186,7 +193,7 @@ def comando_ejecutar(parametro, valor):
             print("eliminando particion...")
             script.setDelete(valor)
         elif(parametro == 'add'):
-            print("agregando espacio a particion...")
+            print("agregando/quitando espacio a particion...")
             script.setAdd(valor)
         elif (parametro == 'ejecutar'):
             if (script.errors == 0):
@@ -206,21 +213,56 @@ def comando_ejecutar(parametro, valor):
                     particion = particion.unpack_data(contenido)
                     mbr.getPartitions()[i] = particion
                     pos += particion.getLength()
+                #obtener tamaño del disco
+                tamano_disco = mbr.getTamano()
                 #eliminar particion
                 if (script.getDelete().lower() == "full"):
                     for partition in mbr.getPartitions():
                         if (partition.getPart_name().rstrip("\x00") == script.getName()):
                             content = ""
-                            for i in range (0, partition.getPart_s()):
-                                content += '\x00'
-                            print(content)
+                            for i in range (partition.getPart_s()):
+                                content += '\x00' 
+                            print(len(content))
+                            #print(content)
                             with open(script.getPath(), 'rb+') as archivo:
                                 archivo.seek(partition.getPart_start())
                                 archivo.write(b'aqui\x00\x00\x00\x00\x00')
                             print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
                             return None
-                    script.errors += 1
                     print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
+                    print("\033[91m<<Error>> {}\033[00m" .format("No se pudo eliminar la particion."))
+                    return None
+                #agregar/quitar tamaño a particion
+                if (int(script.getAdd()) != 0):
+                    for partition in mbr.getPartitions():
+                        if (partition.getPart_name().rstrip("\x00") == script.getName()):
+                            if (int(script.getAdd()) < 0):
+                                if (script.getUnit()) == "M":
+                                    new_size = int(partition.getPart_s())+int(script.getAdd())*1024*1024
+                                elif (script.getUnit()) == "K":
+                                    new_size = int(partition.getPart_s())+ int(script.getAdd())*1024
+                                elif (script.getUnit()) == "B":
+                                    new_size = int(partition.getPart_s())+int(script.getAdd())
+                                if new_size >= 0:
+                                    partition.setPart_s(int(new_size))
+                                    #escribir mbr
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.write(mbr.pack_data())
+                                    #escribir particiones
+                                    pos = mbr.getLength()
+                                    for particion in mbr.getPartitions():
+                                        with open(script.getPath(), 'rb+') as archivo:
+                                            archivo.seek(pos)
+                                            archivo.write(particion.pack_data())
+                                        pos += particion.getLength()
+                                    print("\033[1;32m<<Success>> {}\033[00m" .format("Particion reducida exitosamente."))
+                                    return None
+                                else:
+                                    print("\033[91m<<Error>> {}\033[00m" .format("La particion es menor al tamaño a reducir."))
+                                    print("\033[91m<<Error>> {}\033[00m" .format("No se pudo agregar/quitar tamaño a la particion."))
+                    print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
+                    print("\033[91m<<Error>> {}\033[00m" .format("No se pudo agregar/quitar tamaño a la particion."))
+                    return None
                 #verificar si nombre existe
                 for partition in mbr.getPartitions():
                     if (partition.getPart_name() == script.getName()):
@@ -286,12 +328,9 @@ def comando_ejecutar(parametro, valor):
 
                     
                     if (pos_particion != None):
-                        mbr.getPartitions()[pos_particion].setPart_status("A")
-                        #mbr.getPartitions()[pos_particion].setPart_type(disk.getType())
-                        mbr.getPartitions()[pos_particion].setPart_type('P')
-                        #mbr.getPartitions()[pos_particion].setPart_fit(disk.getFit())
-                        mbr.getPartitions()[pos_particion].setPart_fit("B")
-                        #print(mbr.getPartitions()[pos_particion].getPart_fit())
+                        mbr.getPartitions()[pos_particion].setPart_status("1")
+                        mbr.getPartitions()[pos_particion].setPart_type(script.getType())
+                        mbr.getPartitions()[pos_particion].setPart_fit(script.getFit()[0])
                         mbr.getPartitions()[pos_particion].setPart_start(pos_en_disco)
                         if (script.unit == "M"):
                             mbr.getPartitions()[pos_particion].setPart_s(script.getSize()*1024*1024)
@@ -316,7 +355,7 @@ def comando_ejecutar(parametro, valor):
                         script.errors += 1
                         print("\033[91m<<Error>> {}\033[00m" .format("Las 4 particiones permitidas, ya han sido usadas."))
             if (script.errors != 0):
-                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear/eliminar/extender la particion."))
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear la particion."))
         else:
             print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
@@ -348,11 +387,9 @@ def comando_ejecutar(parametro, valor):
                     pos += particion.getLength()
                 #buscar particion
                 num_particion = -1
-                particionMontada = Partition()
                 for i, partition in enumerate(mbr.getPartitions()):
                     if (partition.getPart_name().rstrip("\x00") == script.getName()):
                         num_particion = i+1
-                        particionMontada = partition
                         break
                 if (num_particion == -1):
                     script.errors += 1
@@ -360,7 +397,7 @@ def comando_ejecutar(parametro, valor):
                 else:
                     id = "62" + str(num_particion) + os.path.splitext(os.path.basename(script.getPath()))[0]
                     if not(id in particiones_montadas):   
-                        particiones_montadas[id] = particionMontada
+                        particiones_montadas[id] = script.getPath()
                         print("Particiones montadas:")
                         for clave, valor in particiones_montadas.items():
                             print(clave)
@@ -888,6 +925,7 @@ def comando_ejecutar(parametro, valor):
     #COMANDO EXECUTE
     elif (comando == 'execute'):
         if (parametro == "path"):
+            print("leyendo ruta del archivo...")
             script.setPath(valor)
         elif (parametro == 'ejecutar'):
             if script.errors == 0:
@@ -903,36 +941,62 @@ def comando_ejecutar(parametro, valor):
         return None
     #COMANDO REP
     elif (comando == "rep"):
-        if (parametro == "path"):
-            path = valor.replace("user", os.getlogin()).replace('"', "")
-            #obtener mbr
-            mbr = Mbr()
-            with open(path, 'rb+') as archivo:
-                archivo.seek(0)
-                contenido = archivo.read(mbr.getLength())
-            mbr = mbr.unpack_data(contenido)
-            #obtener particiones
-            pos = 21
-            for i in range(4):
-                particion = Partition()
+        if (parametro == "name"):
+            print("leyendo nombre del reporte...")
+            script.setName(valor)
+        elif (parametro == "path"):
+            print("leyendo ruta del reporte...")
+            script.setPath(valor)
+        elif (parametro == "id"):
+            print("leyendo id de la particion...")
+            script.setId(valor)
+        elif (parametro == "ruta"):
+            print("leyendo ruta del reporte...")
+            script.setRuta(valor)
+        elif (parametro == "ejecutar"):
+            if (script.errors == 0):
+                #buscar particion o disco
+                if script.getId() != "":
+                    if script.getId() in particiones_montadas:   
+                        path = particiones_montadas[script.getId()]
+                if not(os.path.exists(path)):
+                    return None
+                #obtener mbr
+                mbr = Mbr()
                 with open(path, 'rb+') as archivo:
-                    archivo.seek(pos)
-                    contenido = archivo.read(28)
-                particion = particion.unpack_data(contenido)
-                mbr.getPartitions()[i] = particion
-                pos += 28
-            #imprimir particiones
-            print("mbr_tamaño: ", mbr.getTamano())
-            print("mbr_fecha_creacion: ", mbr.getFecha_creacion())
-            print("mbr_dsk_signature: ", mbr.getDsk_signature())
-            print("mbr_ajuste: ", mbr.getFit())
-            for partition in mbr.getPartitions():
-                print(partition.getPart_status())
-                print(partition.getPart_type())
-                print(partition.getPart_fit())
-                print(partition.getPart_start())
-                print(partition.getPart_s())
-                print(partition.getPart_name())
+                    archivo.seek(0)
+                    contenido = archivo.read(mbr.getLength())
+                mbr = mbr.unpack_data(contenido)
+                #obtener particiones
+                pos = 21
+                for i in range(4):
+                    particion = Partition()
+                    with open(path, 'rb+') as archivo:
+                        archivo.seek(pos)
+                        contenido = archivo.read(28)
+                    particion = particion.unpack_data(contenido)
+                    mbr.getPartitions()[i] = particion
+                    pos += 28
+                #imprimir particiones
+                print("mbr_tamaño: ", mbr.getTamano())
+                print("mbr_fecha_creacion: ", mbr.getFecha_creacion())
+                print("mbr_dsk_signature: ", mbr.getDsk_signature())
+                print("mbr_ajuste: ", mbr.getFit())
+                for partition in mbr.getPartitions():
+                    print(partition.getPart_status())
+                    print(partition.getPart_type())
+                    print(partition.getPart_fit())
+                    print(partition.getPart_start())
+                    print(partition.getPart_s())
+                    print(partition.getPart_name())
+                generarReporteMBR(path, script.getPath())
+                print("\033[1;32m<<Success>> {}\033[00m" .format("Reporte generado exitosamente."))
+                print("\033[36m<<System>> {}\033[00m" .format("...Comando rep ejecutado"))
+            if (script.errors != 0):
+                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo generar el reporte."))
+        else:
+            script.errors += 1
+            print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
     elif (comando[0] == "#"):
         print("\033[90m<<Comment>> {}\033[00m".format(comando[1:]))
@@ -943,6 +1007,87 @@ def generarCodigo():
     code = list(range(1001, 1030))
     random.shuffle(code)
     return code.pop()
+
+def generarReporteMBR(path, pathReport):
+    code = 'digraph G {\n'
+    code += '  subgraph cluster { margin="0.0" penwidth="1.0"\n'
+    code += '    tbl [shape=none fontname="Arial" label=<\n'
+    code += '        <table border="1" cellborder="0" cellspacing="0">\n'
+    #obtener mbr
+    code += '        <tr>\n'
+    code += '            <td bgcolor="springgreen4" align="left"><font color="white"> REPORTE DE MBR </font></td>\n'
+    code += '            <td bgcolor="springgreen4" align="left"><font color="white"> </font></td>\n'
+    code += '        </tr>\n'
+    mbr = Mbr()
+    with open(path, 'rb+') as archivo:
+        archivo.seek(0)
+        contenido = archivo.read(mbr.getLength())
+    mbr = mbr.unpack_data(contenido)
+    code += '        <tr>\n'
+    code += '            <td bgcolor="white" align="center"> mbr_tamño </td>\n'
+    code += '            <td bgcolor="white" align="left"> ' + str(mbr.getTamano()) + ' </td>\n'
+    code += '        </tr>\n'
+    code += '        <tr>\n'
+    code += '            <td bgcolor="white" align="center"> mbr_fecha_creacion </td>\n'
+    code += '            <td bgcolor="white" align="left"> ' + str(mbr.getFecha_creacion()) + ' </td>\n'
+    code += '        </tr>\n'
+    code += '        <tr>\n'
+    code += '            <td bgcolor="white" align="center"> mbr_disk_signature </td>\n'
+    code += '            <td bgcolor="white" align="left"> ' + str(mbr.getDsk_signature()) + ' </td>\n'
+    code += '        </tr>\n'
+    #obtener particiones
+    pos = mbr.getLength()
+    for i in range(4):
+        particion = Partition()
+        with open(path, 'rb+') as archivo:
+            archivo.seek(pos)
+            contenido = archivo.read(particion.getLength())
+        particion = particion.unpack_data(contenido)
+        mbr.getPartitions()[i] = particion
+        code += '        <tr>\n'
+        code += '            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>\n'
+        code += '            <td bgcolor="teal" align="left"><font color="white"> </font></td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_status </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + mbr.getPartitions()[i].getPart_status() + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_type </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + mbr.getPartitions()[i].getPart_type() + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_fit </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + mbr.getPartitions()[i].getPart_fit() + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_start </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + str(mbr.getPartitions()[i].getPart_start()) + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_size </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + str(mbr.getPartitions()[i].getPart_s()) + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_name </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + mbr.getPartitions()[i].getPart_name().rstrip("\x00") + ' </td>\n'
+        code += '        </tr>\n'
+        pos += particion.getLength()
+    code += '        </table>\n'
+    code += '    >];\n'
+    code += '  }\n'
+    code += '}'
+
+    with open("reporte_mbr.dot", "w") as archivo:
+        archivo.write(code)
+        archivo.write("¡Puedo escribir más líneas aquí!\n")
+
+    G = pgv.AGraph("reporte_mbr.dot")
+    G.draw(pathReport, prog="dot", format="png")
+
+
+def generarReporteDisco():
+    pass
 
 #convertir a binario
 '''

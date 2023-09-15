@@ -112,7 +112,7 @@ def t_CADENA(t):
     return t
 
 def t_ENTERO(t):
-    r'\d+'
+    r'\d+|-\d+'
     try:
         t.value = int(t.value)
     except ValueError:
