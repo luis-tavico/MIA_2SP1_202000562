@@ -15,3 +15,5 @@ def nuevaRuta (pathReport):
             n += 1
 
 nuevaRuta("/home/user/Escritorio/reports/reporte1.jpg")
+nuevaRuta("/home/user/Escritorio/reports/reporte1.jpg")
+nuevaRuta("/home/user/Escritorio/reports/reporte1.jpg")
