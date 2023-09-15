@@ -10,10 +10,13 @@ def nuevaRuta (pathReport):
         else:
             carpetas = os.path.dirname(pathReport)
             nombre, extension = os.path.splitext(os.path.basename(pathReport))
-            nombre += "(" + str(n) + ")"
-            pathReport = carpetas + nombre + extension
+            if ("(" in nombre):
+                nombre = nombre[:nombre.index("(")+1] + str(n) + nombre[nombre.index(")"):]
+            else:
+                nombre += "(" + str(n) + ")"
+            pathReport = carpetas + "/" + nombre + extension
             n += 1
 
-nuevaRuta("/home/user/Escritorio/reports/reporte1.jpg")
-nuevaRuta("/home/user/Escritorio/reports/reporte1.jpg")
-nuevaRuta("/home/user/Escritorio/reports/reporte1.jpg")
+nuevaRuta("/home/luis_tavico/Escritorio/reports/reporte1.jpg")
+nuevaRuta("/home/luis_tavico/Escritorio/reports/reporte1.jpg")
+nuevaRuta("/home/luis_tavico/Escritorio/reports/reporte1.jpg")

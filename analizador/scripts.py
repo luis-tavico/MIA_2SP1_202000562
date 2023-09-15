@@ -1305,16 +1305,7 @@ def generarReporteMBR(path, pathReport):
     with open("reportes/reporte_mbr.dot", "w") as archivo:
         archivo.write(code)
     
-    n = 1
-    while True:
-        if not(os.path.exists(pathReport)):
-            break
-        else:
-            carpetas = os.path.dirname(pathReport)
-            nombre, extension = os.path.splitext(os.path.basename(pathReport))
-            nombre += "(" + str(n) + ")"
-            pathReport = carpetas + nombre + extension
-            n += 1
+    pathReport = verificarNombre(pathReport)
 
     G = pgv.AGraph("reportes/reporte_mbr.dot")
     G.draw(pathReport, prog="dot", format=os.path.splitext(os.path.basename(pathReport))[1][1:])
@@ -1378,16 +1369,7 @@ def generarReporteEBR(path, pathReport, puntero):
     with open("reportes/reporte_ebr.dot", "w") as archivo:
         archivo.write(code)
 
-    n = 1
-    while True:
-        if not(os.path.exists(pathReport)):
-            break
-        else:
-            carpetas = os.path.dirname(pathReport)
-            nombre, extension = os.path.splitext(os.path.basename(pathReport))
-            nombre += "(" + str(n) + ")"
-            pathReport = carpetas + nombre + extension
-            n += 1
+    pathReport = verificarNombre(pathReport)
 
     G = pgv.AGraph("reportes/reporte_ebr.dot")
     G.draw(pathReport, prog="dot", format=os.path.splitext(os.path.basename(pathReport))[1][1:])
@@ -1422,7 +1404,29 @@ def generarReporteDisco(path, pathReport):
             if (mbr.getPartitions()[i].getPart_status() == "0"):
                 label += '|Libre'
             elif (mbr.getPartitions()[i].getPart_status() == "1"):
-                label += '|{Extendida|{EBR|Logica}}'
+                puntero = mbr.getPartitions()[i].getPart_start()
+                #obtener ebr
+                ebr = Ebr()
+                with open(path, 'rb+') as archivo:
+                    archivo.seek(puntero)
+                    contenido = archivo.read(ebr.getLength())
+                ebr = ebr.unpack_data(contenido)
+            label += '|{Extendida|{'
+            while True:
+                label += 'EBR|Logica'
+                if (ebr.getPart_next() == -1):
+                    break
+                else:
+                    puntero = ebr.getPart_next()
+                    #obtener ebr
+                    ebr = Ebr()
+                    with open(path, 'rb+') as archivo:
+                        archivo.seek(puntero)
+                        contenido = archivo.read(ebr.getLength())
+                    ebr = ebr.unpack_data(contenido)
+                    label += '|'
+
+            label += '}}'
         pos += particion.getLength()
     code += '        node_disk [shape="record" label="' + label + '"];\n'
     code += '    }\n'
@@ -1431,9 +1435,26 @@ def generarReporteDisco(path, pathReport):
     with open("reportes/reporte_disco.dot", "w") as archivo:
         archivo.write(code)
 
+    pathReport = verificarNombre(pathReport)
+
     G = pgv.AGraph("reportes/reporte_disco.dot")
     G.draw(pathReport, prog="dot", format=os.path.splitext(os.path.basename(pathReport))[1][1:])
 
+def verificarNombre(pathReport):
+    n = 1
+    while True:
+        if not(os.path.exists(pathReport)):
+            break
+        else:
+            carpetas = os.path.dirname(pathReport)
+            nombre, extension = os.path.splitext(os.path.basename(pathReport))
+            if ("(" in nombre):
+                nombre = nombre[:nombre.index("(")+1] + str(n) + nombre[nombre.index(")"):]
+            else:
+                nombre += "(" + str(n) + ")"
+            pathReport = carpetas + "/" + nombre + extension
+            n += 1
+    return pathReport
 
 #convertir a binario
 '''
