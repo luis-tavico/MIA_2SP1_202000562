@@ -12,6 +12,7 @@ if __name__ == '__main__':
     #fdisk -add=100 -path=/home/user/Escritorio/Disco1.dsk -name=Part1 -unit=B
     #mount -path=/home/user/Escritorio/Disco1.dsk -name=Part2
     #unmount -id=623Disco1
+    #mkfs -type=full -id=623Disco1
     #AQUI EMPIEZA EL DOC
     #mkfile -size=15 -path=/home/user/Escritorio/a.txt -r
     #mkfile -size=10 -path=/home/user/Escritorio/b.txt -r

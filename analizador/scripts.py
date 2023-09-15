@@ -1,4 +1,5 @@
 import os
+import math
 import random
 from datetime import datetime
 import shutil
@@ -12,6 +13,7 @@ from analizador.comandos.ebr import Ebr
 from analizador.comandos.edit import Edit
 from analizador.comandos.execute import Execute
 from analizador.comandos.fdisk import Fdisk
+from analizador.comandos.inodo import Inodo
 from analizador.comandos.login import Login
 from analizador.comandos.mbr import Mbr
 from analizador.comandos.mkdir import Mkdir
@@ -29,6 +31,7 @@ from analizador.comandos.rep import Rep
 from analizador.comandos.rmdisk import Rmdisk
 from analizador.comandos.rmgrp import Rmgrp
 from analizador.comandos.rmusr import Rmusr
+from analizador.comandos.superBloque import SuperBloque
 from analizador.comandos.unmount import Unmount
 
 global comando, script, usuario_actual, particiones_montadas
@@ -611,10 +614,42 @@ def comando_ejecutar(parametro, valor):
             print("leyendo sistema de fichero...")
             script.setFs(valor)
         elif (parametro == 'ejecutar'):
+            #buscar particion o disco
             if script.getId() in particiones_montadas:
-                pass
+                path = particiones_montadas[script.getId()]
+                if not(os.path.exists(path)):
+                    return None
+                #obtener mbr
+                mbr = Mbr()
+                with open(path, 'rb+') as archivo:
+                    archivo.seek(0)
+                    contenido = archivo.read(mbr.getLength())
+                mbr = mbr.unpack_data(contenido)
+                #obtener particiones
+                pos = mbr.getLength()
+                for i in range(4):
+                    particion = Partition()
+                    with open(path, 'rb+') as archivo:
+                        archivo.seek(pos)
+                        contenido = archivo.read(particion.getLength())
+                    particion = particion.unpack_data(contenido)
+                    mbr.getPartitions()[i] = particion
+                    pos += particion.getLength()
+                #obtener nombre particion
+                num_particion = script.getId()[:script.getId().lower().index("d")]
+                num_particion = num_particion[2:]
+                #calculos
+                super_bloque = SuperBloque()
+                #archivo_bloque = ArchivoBloque()
+                inodo = Inodo()
+                numerator = mbr.getPartitions()[int(num_particion)].getPart_s() - super_bloque.getLength
+                denominator = 4 + inodo.getLength() + 3 * 64
+                n = math.floor(numerator / denominator)
+                print(n)
+                return None
+                #####
             else:
-                print("¡Error! la particion no existe.")
+                print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
         else:
             print("\033[91m<<Error>> {}\033[00m" .format("Parametro no valido."))
         return None
