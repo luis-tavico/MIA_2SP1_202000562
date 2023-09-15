@@ -1,1 +1,0 @@
-rmdisk -path=/home/luis_tavico/Escritorio/Disco1.dsk

@@ -1,6 +1,0 @@
-digraph G {
-    subgraph cluster { margin="5.0" penwidth="1.0" bgcolor="#68d9e2"
-        node [style="rounded" style=filled fontname="Arial" fontsize="16" margin=0.3];
-        node_disk [shape="record" label="MBR|Libre\n25% del disco|{Extendida|{EBR|Logica|EBR|Logica}}|Primaria|Libre"];
-    }
-}

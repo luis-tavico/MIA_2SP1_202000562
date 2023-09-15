@@ -1,7 +1,7 @@
 import struct 
 
 class Ebr:
-    def __init__(self, part_status, part_fit, part_start, part_s, part_next, part_name):
+    def __init__(self, part_status = "0", part_fit = "W", part_start = 0, part_s = 0, part_next = -1, part_name = ""):
         self.part_status = part_status
         self.part_fit = part_fit
         self.part_start = part_start
@@ -58,6 +58,7 @@ class Ebr:
     
     def getLength(self):
         return struct.calcsize('cciii16s')
+        #devuelve 32
     
 '''
 part = Ebr("A", "P", 1500, 3000, 12345, "particion_1")
@@ -66,4 +67,5 @@ print(pack)
 unpack = part.unpack_data(pack)
 print(unpack)
 print(unpack.getPart_name())
+print(part.getLength())
 '''

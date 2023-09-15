@@ -1,12 +1,7 @@
-def generarReporteDisco():
-    code =  'digraph G {\n'
-    code += '    subgraph cluster { margin="5.0" penwidth="1.0" bgcolor="#68d9e2"\n'
-    code += '        node [style="rounded" style=filled fontname="Arial" fontsize="16" margin=0.3];\n'
-    label = 'MBR|Libre\\n25% del disco|{Extendida|{EBR|Logica|EBR|Logica}}|Primaria|Libre'
-    code += '        node_disk [shape="record" label="' + label + '"];\n'
-    code += '    }\n'
-    code += '}'
+content = ""
+for i in range (100):
+    content += "\x00"  # Tu cadena de caracteres
+content_binary = content.encode('latin-1')  # Convertir la cadena a bytes
 
-    return code
-
-print(generarReporteDisco())
+# Imprimir la representación binaria
+print(content_binary)
