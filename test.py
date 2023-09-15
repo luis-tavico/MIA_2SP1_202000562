@@ -1,7 +1,17 @@
-content = ""
-for i in range (100):
-    content += "\x00"  # Tu cadena de caracteres
-content_binary = content.encode('latin-1')  # Convertir la cadena a bytes
+import os
 
-# Imprimir la representación binaria
-print(content_binary)
+
+def nuevaRuta (pathReport):
+    n = 1
+    while True:
+        if not(os.path.exists(pathReport)):
+            print(pathReport)
+            break
+        else:
+            carpetas = os.path.dirname(pathReport)
+            nombre, extension = os.path.splitext(os.path.basename(pathReport))
+            nombre += "(" + str(n) + ")"
+            pathReport = carpetas + nombre + extension
+            n += 1
+
+nuevaRuta("/home/user/Escritorio/reports/reporte1.jpg")

@@ -219,28 +219,36 @@ def comando_ejecutar(parametro, valor):
                 if (script.getDelete().lower() == "full"):
                     for partition in mbr.getPartitions():
                         if (partition.getPart_name().rstrip("\x00") == script.getName()):
-                            content = ''
-                            for i in range (partition.getPart_s()):
-                                content += '\x00' 
-                            content_binary = content.encode('latin-1')
-                            #print(content)
-                            with open(script.getPath(), 'rb+') as archivo:
-                                archivo.seek(partition.getPart_start())
-                                archivo.write(content_binary)
-                            #modificar particion
-                            partition.setPart_status("0")
-                            #escribir mbr
-                            with open(script.getPath(), 'rb+') as archivo:
-                                archivo.write(mbr.pack_data())
-                            #escribir particiones
-                            pos = mbr.getLength()
-                            for particion in mbr.getPartitions():
+                            question = (f'¿Desea eliminar la particion {script.getName()} (s/n) ')
+                            r = input("\033[1;33m<<Confirm>> {}\033[00m\n" .format(question))
+                            if (r == 's'): 
+                                content = ''
+                                for i in range (partition.getPart_s()):
+                                    content += '\x00' 
+                                content_binary = content.encode('latin-1')
+                                #print(content)
                                 with open(script.getPath(), 'rb+') as archivo:
-                                    archivo.seek(pos)
-                                    archivo.write(particion.pack_data())
-                                pos += particion.getLength()
-                            print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
-                            return None
+                                    archivo.seek(partition.getPart_start())
+                                    archivo.write(content_binary)
+                                #modificar particion
+                                partition.setPart_status("0")
+                                #escribir mbr
+                                with open(script.getPath(), 'rb+') as archivo:
+                                    archivo.write(mbr.pack_data())
+                                #escribir particiones
+                                pos = mbr.getLength()
+                                for particion in mbr.getPartitions():
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.seek(pos)
+                                        archivo.write(particion.pack_data())
+                                    pos += particion.getLength()
+
+                                print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
+                                print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                return None
+                            else:
+                                print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                return None
                     print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
                     print("\033[91m<<Error>> {}\033[00m" .format("No se pudo eliminar la particion."))
                     return None
@@ -268,6 +276,7 @@ def comando_ejecutar(parametro, valor):
                                             archivo.write(particion.pack_data())
                                         pos += particion.getLength()
                                     print("\033[1;32m<<Success>> {}\033[00m" .format("Particion reducida exitosamente."))
+                                    print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
                                     return None
                                 else:
                                     print("\033[91m<<Error>> {}\033[00m" .format("La particion es menor al tamaño a reducir."))
@@ -295,6 +304,7 @@ def comando_ejecutar(parametro, valor):
                                                     archivo.write(particion.pack_data())
                                                 pos += particion.getLength()
                                             print("\033[1;32m<<Success>> {}\033[00m" .format("Particion aumentada exitosamente."))
+                                            print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
                                             return None
                                         else:
                                             print("\033[91m<<Error>> {}\033[00m" .format("El disco es menor al tamaño a aumentar la particion."))
@@ -325,13 +335,14 @@ def comando_ejecutar(parametro, valor):
                                                 archivo.write(particion.pack_data())
                                             pos += particion.getLength()
                                         print("\033[1;32m<<Success>> {}\033[00m" .format("Particion aumentada exitosamente."))
+                                        print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
                                         return None
                                     else:
                                         print("\033[91m<<Error>> {}\033[00m" .format("El disco es menor al tamaño a aumentar la particion."))
                                         print("\033[91m<<Error>> {}\033[00m" .format("No se pudo agregar tamaño a la particion."))
                                         return None  
                     print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
-                    print("\033[91m<<Error>> {}\033[00m" .format("No se pudo agregar/quitar tamaño a la particion."))
+                    print("\033[91m<<Error>> {}\033[00m" .format("No se pudo reducir/aumentar tamaño a la particion."))
                     return None
                 #verificar si nombre existe
                 for partition in mbr.getPartitions():
@@ -409,54 +420,67 @@ def comando_ejecutar(parametro, valor):
                             contenido = archivo.read(ebr.getLength())
                         ebr = ebr.unpack_data(contenido)
                         if (ebr.getPart_s() == 0):
-                            ebr.setPart_status("1")
-                            ebr.setPart_fit(script.getFit()[0])
-                            ebr.setPart_start(inicio+ebr.getLength())
-                            ebr.setPart_s(int(script.getSize()))
-                            ebr.setPart_next(-1)
-                            ebr.setPart_name(script.getName())
-                            #escribir ebr
-                            with open(script.getPath(), 'rb+') as archivo:
-                                archivo.seek(inicio)
-                                archivo.write(ebr.pack_data())
-                            print(inicio)
-                            print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
-                            print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
-                            return None
+                            if (particion_extendida.getPart_s() > (ebr.getLength() + ebr.getPart_s())):
+                                ebr.setPart_status("1")
+                                ebr.setPart_fit(script.getFit()[0])
+                                ebr.setPart_start(inicio+ebr.getLength())
+                                ebr.setPart_s(int(script.getSize()))
+                                ebr.setPart_next(-1)
+                                ebr.setPart_name(script.getName())
+                                #escribir ebr
+                                with open(script.getPath(), 'rb+') as archivo:
+                                    archivo.seek(inicio)
+                                    archivo.write(ebr.pack_data())
+                                print(inicio)
+                                print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
+                                print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                return None
+                            else:
+                                print("\033[91m<<Error>> {}\033[00m" .format("Espacio insuficiente en disco."))
+                                print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear la particion."))
+                                return None
                         else:
                             puntero = inicio
+                            tam_disp = particion_extendida.getPart_s() - (ebr.getLength() + ebr.getPart_s())
                             while True:
                                 if (ebr.getPart_next() == -1):
-                                    ebr.setPart_next(ebr.getPart_start() + ebr.getPart_s())
-                                    #escribir ebr
-                                    with open(script.getPath(), 'rb+') as archivo:
-                                        archivo.seek(puntero)
-                                        archivo.write(ebr.pack_data())
-                                    print(puntero)
-                                    puntero += ebr.getLength() + ebr.getPart_s()   
-                                    ebr = Ebr()
-                                    ebr.setPart_status("1")
-                                    ebr.setPart_fit(script.getFit()[0])
-                                    ebr.setPart_start(puntero+ebr.getLength())
-                                    ebr.setPart_s(int(script.getSize()))
-                                    ebr.setPart_next(-1)
-                                    ebr.setPart_name(script.getName())
-                                    #escribir ebr
-                                    with open(script.getPath(), 'rb+') as archivo:
-                                        archivo.seek(puntero)
-                                        archivo.write(ebr.pack_data())
-                                    print(puntero)
-                                    print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
-                                    print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
-                                    return None
+                                    if (tam_disp > (script.getSize() + 32)):
+                                        ebr.setPart_next(ebr.getPart_start() + ebr.getPart_s())
+                                        #escribir ebr
+                                        with open(script.getPath(), 'rb+') as archivo:
+                                            archivo.seek(puntero)
+                                            archivo.write(ebr.pack_data())
+                                        print(puntero)
+                                        puntero += ebr.getLength() + ebr.getPart_s()   
+                                        print(puntero)
+                                        ebr = Ebr()
+                                        ebr.setPart_status("1")
+                                        ebr.setPart_fit(script.getFit()[0])
+                                        ebr.setPart_start(puntero+ebr.getLength())
+                                        ebr.setPart_s(int(script.getSize()))
+                                        ebr.setPart_next(-1)
+                                        ebr.setPart_name(script.getName())
+                                        #escribir ebr
+                                        with open(script.getPath(), 'rb+') as archivo:
+                                            archivo.seek(puntero)
+                                            archivo.write(ebr.pack_data())
+                                        print(puntero)
+                                        print("\033[1;32m<<Success>> {}\033[00m" .format("Particion creada exitosamente."))
+                                        print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                        return None
+                                    else:
+                                        print("\033[91m<<Error>> {}\033[00m" .format("Espacio insuficiente en disco."))
+                                        print("\033[91m<<Error>> {}\033[00m" .format("No se pudo crear la particion."))
+                                        return None
                                 else:
-                                    puntero = ebr.getPart_start() + ebr.getPart_s()
+                                    puntero += ebr.getLength() + ebr.getPart_s() 
                                     #obtener siguiente ebr
                                     ebr = Ebr()
                                     with open(script.getPath(), 'rb+') as archivo:
                                         archivo.seek(puntero)
                                         contenido = archivo.read(ebr.getLength())
                                     ebr = ebr.unpack_data(contenido)
+                                    tam_disp -= (ebr.getLength() + ebr.getPart_s())
                     
                     if (pos_particion != None):
                         tam_usado = 133
@@ -1225,6 +1249,8 @@ def generarReporteMBR(path, pathReport):
         code += '        </tr>\n'
         if (mbr.getPartitions()[i].getPart_type().lower() == "e" ):
             puntero = mbr.getPartitions()[i].getPart_start()
+            #generar reporte de ebr
+            generarReporteEBR(path, pathReport, puntero)
             #obtener ebr
             ebr = Ebr()
             with open(path, 'rb+') as archivo:
@@ -1278,30 +1304,90 @@ def generarReporteMBR(path, pathReport):
 
     with open("reportes/reporte_mbr.dot", "w") as archivo:
         archivo.write(code)
+    
+    n = 1
+    while True:
+        if not(os.path.exists(pathReport)):
+            break
+        else:
+            carpetas = os.path.dirname(pathReport)
+            nombre, extension = os.path.splitext(os.path.basename(pathReport))
+            nombre += "(" + str(n) + ")"
+            pathReport = carpetas + nombre + extension
+            n += 1
 
     G = pgv.AGraph("reportes/reporte_mbr.dot")
     G.draw(pathReport, prog="dot", format=os.path.splitext(os.path.basename(pathReport))[1][1:])
 
-def generarReporteEBR(path, pathReport):
+def generarReporteEBR(path, pathReport, puntero):
     code =  'digraph G {\n'
     code += '  subgraph cluster { margin="0.0" penwidth="1.0"\n'
     code += '    tbl [shape=none fontname="Arial" label=<\n'
     code += '        <table border="1" cellborder="0" cellspacing="0">\n'
-    code += '        <tr>\n'
-    code += '            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>\n'
-    code += '            <td bgcolor="teal" align="left"><font color="white"> </font></td>\n'
-    code += '        </tr>\n'
-    code += '        <tr>\n'
-    code += '            <td bgcolor="white" align="center"> part_status </td>'
-    code += '            <td bgcolor="white" align="left"> 1024 </td>'
-    code += '        </tr>\n'
+    #obtener ebr
+    ebr = Ebr()
+    with open(path, 'rb+') as archivo:
+        archivo.seek(puntero)
+        contenido = archivo.read(ebr.getLength())
+    ebr = ebr.unpack_data(contenido)
+    while True:
+        code += '        <tr>\n'
+        code += '            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>\n'
+        code += '            <td bgcolor="teal" align="left"><font color="white"> </font></td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_status </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_status()) + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_type </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + 'l' + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_fit </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_fit()) + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_start </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_start()) + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_size </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_s()) + ' </td>\n'
+        code += '        </tr>\n'
+        code += '        <tr>\n'
+        code += '            <td bgcolor="white" align="center"> part_name </td>\n'
+        code += '            <td bgcolor="white" align="left"> ' + str(ebr.getPart_name()).rstrip("\x00") + ' </td>\n'
+        code += '        </tr>\n'
+        if (ebr.getPart_next() == -1):
+            break
+        else:
+            puntero = ebr.getPart_next()
+            #obtener ebr
+            ebr = Ebr()
+            with open(path, 'rb+') as archivo:
+                archivo.seek(puntero)
+                contenido = archivo.read(ebr.getLength())
+            ebr = ebr.unpack_data(contenido)
     code += '        </table>\n'
     code += '    >];\n'
     code += '  }\n'
     code += '}'
+
     
     with open("reportes/reporte_ebr.dot", "w") as archivo:
         archivo.write(code)
+
+    n = 1
+    while True:
+        if not(os.path.exists(pathReport)):
+            break
+        else:
+            carpetas = os.path.dirname(pathReport)
+            nombre, extension = os.path.splitext(os.path.basename(pathReport))
+            nombre += "(" + str(n) + ")"
+            pathReport = carpetas + nombre + extension
+            n += 1
 
     G = pgv.AGraph("reportes/reporte_ebr.dot")
     G.draw(pathReport, prog="dot", format=os.path.splitext(os.path.basename(pathReport))[1][1:])

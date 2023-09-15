@@ -12,11 +12,11 @@ digraph G {
         </tr>
         <tr>
             <td bgcolor="white" align="center"> mbr_fecha_creacion </td>
-            <td bgcolor="white" align="left"> 2023-09-15 04:39:00 </td>
+            <td bgcolor="white" align="left"> 2023-09-15 13:23:18 </td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> mbr_disk_signature </td>
-            <td bgcolor="white" align="left"> 1012 </td>
+            <td bgcolor="white" align="left"> 1010 </td>
         </tr>
         <tr>
             <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
@@ -84,7 +84,7 @@ digraph G {
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_next </td>
-            <td bgcolor="white" align="left"> 382 </td>
+            <td bgcolor="white" align="left"> 407 </td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_fit </td>
@@ -96,11 +96,39 @@ digraph G {
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_size </td>
-            <td bgcolor="white" align="left"> 50 </td>
+            <td bgcolor="white" align="left"> 75 </td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_name </td>
             <td bgcolor="white" align="left"> Particion1 </td>
+        </tr>
+        <tr>
+            <td bgcolor="tomato" align="left"><font color="white"> Particion Logica </font></td>
+            <td bgcolor="tomato" align="left"><font color="white"> </font></td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_status </td>
+            <td bgcolor="white" align="left"> 1 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_next </td>
+            <td bgcolor="white" align="left"> 564 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_fit </td>
+            <td bgcolor="white" align="left"> b </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_start </td>
+            <td bgcolor="white" align="left"> 439 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_size </td>
+            <td bgcolor="white" align="left"> 125 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_name </td>
+            <td bgcolor="white" align="left"> Particion2 </td>
         </tr>
         <tr>
             <td bgcolor="tomato" align="left"><font color="white"> Particion Logica </font></td>
@@ -120,15 +148,15 @@ digraph G {
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_start </td>
-            <td bgcolor="white" align="left"> 414 </td>
+            <td bgcolor="white" align="left"> 596 </td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_size </td>
-            <td bgcolor="white" align="left"> 75 </td>
+            <td bgcolor="white" align="left"> 100 </td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_name </td>
-            <td bgcolor="white" align="left"> Particion2 </td>
+            <td bgcolor="white" align="left"> Particion3 </td>
         </tr>
         <tr>
             <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
