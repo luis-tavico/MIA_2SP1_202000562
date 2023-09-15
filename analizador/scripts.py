@@ -3,6 +3,7 @@ import random
 from datetime import datetime
 import shutil
 import pygraphviz as pgv
+#import graphviz
 from analizador.comandos.cat import Cat
 from analizador.comandos.chgrp import Chgrp
 from analizador.comandos.chmod import Chmod
@@ -989,7 +990,10 @@ def comando_ejecutar(parametro, valor):
                     print(partition.getPart_start())
                     print(partition.getPart_s())
                     print(partition.getPart_name())
-                generarReporteMBR(path, script.getPath())
+                if (script.getName().lower() == "mbr"):
+                    generarReporteMBR(path, script.getPath())
+                elif (script.getName().lower() == "disk"):
+                    generarReporteDisco(path, script.getPath())
                 print("\033[1;32m<<Success>> {}\033[00m" .format("Reporte generado exitosamente."))
                 print("\033[36m<<System>> {}\033[00m" .format("...Comando rep ejecutado"))
             if (script.errors != 0):
@@ -1080,14 +1084,67 @@ def generarReporteMBR(path, pathReport):
 
     with open("reporte_mbr.dot", "w") as archivo:
         archivo.write(code)
-        archivo.write("¡Puedo escribir más líneas aquí!\n")
 
+    #src = graphviz.Source(code)
+    #src.render('graph', format='png')
     G = pgv.AGraph("reporte_mbr.dot")
-    G.draw(pathReport, prog="dot", format="png")
+    G.draw(pathReport, prog="dot", format=os.path.splitext(os.path.basename(pathReport))[1][1:])
 
+def generarReporteEBR(path, pathReport):
+    code =  'digraph G {\n'
+    code += '  subgraph cluster { margin="0.0" penwidth="1.0"\n'
+    code += '    tbl [shape=none fontname="Arial" label=<\n'
+    code += '        <table border="1" cellborder="0" cellspacing="0">\n'
+    code += '        <tr>\n'
+    code += '            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>\n'
+    code += '            <td bgcolor="teal" align="left"><font color="white"> </font></td>\n'
+    code += '        </tr>\n'
+    code += '        <tr>\n'
+    code += '            <td bgcolor="white" align="center"> part_status </td>'
+    code += '            <td bgcolor="white" align="left"> 1024 </td>'
+    code += '        </tr>\n'
+    code += '        </table>\n'
+    code += '    >];\n'
+    code += '  }\n'
+    code += '}'
 
-def generarReporteDisco():
-    pass
+def generarReporteDisco(path, pathReport):
+    code =  'digraph G {\n'
+    code += '    subgraph cluster { margin="5.0" penwidth="1.0" bgcolor="#68d9e2"\n'
+    code += '        node [style="rounded" style=filled fontname="Arial" fontsize="16" margin=0.3];\n'
+    label = ''
+    #obtener mbr
+    mbr = Mbr()
+    with open(path, 'rb+') as archivo:
+        archivo.seek(0)
+        contenido = archivo.read(mbr.getLength())
+    mbr = mbr.unpack_data(contenido)
+    label += 'MBR'
+    #obtener particiones
+    pos = mbr.getLength()
+    for i in range(4):
+        particion = Partition()
+        with open(path, 'rb+') as archivo:
+            archivo.seek(pos)
+            contenido = archivo.read(particion.getLength())
+        particion = particion.unpack_data(contenido)
+        mbr.getPartitions()[i] = particion
+        if (mbr.getPartitions()[i].getPart_type().lower() == "p"):
+            label += '|Primaria'
+        elif (mbr.getPartitions()[i].getPart_type().lower() == "e"):
+            label += '|{Extendida|{EBR|Logica}}'
+        pos += particion.getLength()
+    #label += '|Libre\\n25% del disco|{Extendida|{EBR|Logica|EBR|Logica}}'
+    code += '        node_disk [shape="record" label="' + label + '"];\n'
+    code += '    }\n'
+    code += '}'
+
+    with open("reporte_disco.dot", "w") as archivo:
+        archivo.write(code)
+
+    G = pgv.AGraph("reporte_disco.dot")
+    G.draw(pathReport, prog="dot", format=os.path.splitext(os.path.basename(pathReport))[1][1:])
+
 
 #convertir a binario
 '''

@@ -50,6 +50,7 @@ reserved_words = {
     'cont' : 'CONT',
     'destino' : 'DESTINO',
     'ugo' : 'UGO',
+    'ruta' : 'RUTA'
     #Valores
     #'full' : 'FULL'
 }
@@ -59,6 +60,7 @@ tokens = [
     'IGUAL',
     'RUTA_ARCHIVO_ADSJ',
     'RUTA_ARCHIVO_TXT',
+    'RUTA_IMAGEN',
     'RUTA_DISCO',
     'RUTA_CARPETA',
     'NOMBRE_ARCHIVO',
@@ -84,6 +86,10 @@ def t_RUTA_ARCHIVO_ADSJ(t):
 
 def t_RUTA_DISCO(t):
     r'(\"(\/(\w|\s)+)+\.dsk\")|((\/\w+)+\.dsk)'
+    return t
+
+def t_RUTA_IMAGEN(t):
+    r'(\"(\/(\w|\s)+)+\.jpg\")|((\/\w+)+\.jpg)|(\"(\/(\w|\s)+)+\.png\")|((\/\w+)+\.png)'
     return t
 
 def t_RUTA_CARPETA(t):
@@ -221,6 +227,7 @@ def p_param(t):
 def p_valor(t):
     '''valor : ENTERO
              | RUTA_ARCHIVO_TXT
+             | RUTA_IMAGEN
              | RUTA_ARCHIVO_ADSJ
              | RUTA_DISCO
              | RUTA_CARPETA

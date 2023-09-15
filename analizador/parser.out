@@ -1,5 +1,9 @@
 Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
+Unused terminals:
+
+    RUTA
+
 Grammar
 
 Rule 0     S' -> instrucciones
@@ -58,20 +62,21 @@ Rule 52    param -> DESTINO
 Rule 53    param -> UGO
 Rule 54    valor -> ENTERO
 Rule 55    valor -> RUTA_ARCHIVO_TXT
-Rule 56    valor -> RUTA_ARCHIVO_ADSJ
-Rule 57    valor -> RUTA_DISCO
-Rule 58    valor -> RUTA_CARPETA
-Rule 59    valor -> NOMBRE_ARCHIVO
-Rule 60    valor -> AJUSTE
-Rule 61    valor -> UNIDAD
-Rule 62    valor -> CADENA
-Rule 63    opcion -> GUION R
+Rule 56    valor -> RUTA_IMAGEN
+Rule 57    valor -> RUTA_ARCHIVO_ADSJ
+Rule 58    valor -> RUTA_DISCO
+Rule 59    valor -> RUTA_CARPETA
+Rule 60    valor -> NOMBRE_ARCHIVO
+Rule 61    valor -> AJUSTE
+Rule 62    valor -> UNIDAD
+Rule 63    valor -> CADENA
+Rule 64    opcion -> GUION R
 
 Terminals, with rules where they appear
 
 ADD                  : 45
-AJUSTE               : 60
-CADENA               : 62
+AJUSTE               : 61
+CADENA               : 63
 CAT                  : 18
 CHGRP                : 27
 CHMOD                : 28
@@ -89,7 +94,7 @@ FILEN                : 51
 FIND                 : 25
 FIT                  : 40
 GRP                  : 49
-GUION                : 37 63
+GUION                : 37 64
 ID                   : 48
 IGUAL                : 37
 LOGIN                : 11
@@ -103,25 +108,27 @@ MKUSR                : 15
 MOUNT                : 8
 MOVE                 : 24
 NAME                 : 42
-NOMBRE_ARCHIVO       : 59
+NOMBRE_ARCHIVO       : 60
 PASS                 : 47
 PATH                 : 39
 PAUSE                : 29
-R                    : 63
+R                    : 64
 REMOVE               : 19
 RENAME               : 21
 REP                  : 31
 RMDISK               : 6
 RMGRP                : 14
 RMUSR                : 16
-RUTA_ARCHIVO_ADSJ    : 56
+RUTA                 : 
+RUTA_ARCHIVO_ADSJ    : 57
 RUTA_ARCHIVO_TXT     : 55
-RUTA_CARPETA         : 58
-RUTA_DISCO           : 57
+RUTA_CARPETA         : 59
+RUTA_DISCO           : 58
+RUTA_IMAGEN          : 56
 SIZE                 : 38
 TYPE                 : 43
 UGO                  : 53
-UNIDAD               : 61
+UNIDAD               : 62
 UNIT                 : 41
 UNMOUNT              : 9
 USER                 : 46
@@ -296,7 +303,7 @@ state 3
     (35) parametro -> . argumento
     (36) parametro -> . opcion
     (37) argumento -> . GUION param IGUAL valor
-    (63) opcion -> . GUION R
+    (64) opcion -> . GUION R
 
     MKDISK          reduce using rule 4 (instruccion -> comando .)
     RMDISK          reduce using rule 4 (instruccion -> comando .)
@@ -1393,7 +1400,7 @@ state 34
     (35) parametro -> . argumento
     (36) parametro -> . opcion
     (37) argumento -> . GUION param IGUAL valor
-    (63) opcion -> . GUION R
+    (64) opcion -> . GUION R
 
     MKDISK          reduce using rule 34 (parametros -> parametro .)
     RMDISK          reduce using rule 34 (parametros -> parametro .)
@@ -1506,7 +1513,7 @@ state 36
 state 37
 
     (37) argumento -> GUION . param IGUAL valor
-    (63) opcion -> GUION . R
+    (64) opcion -> GUION . R
     (38) param -> . SIZE
     (39) param -> . PATH
     (40) param -> . FIT
@@ -1588,38 +1595,38 @@ state 39
 
 state 40
 
-    (63) opcion -> GUION R .
+    (64) opcion -> GUION R .
 
-    GUION           reduce using rule 63 (opcion -> GUION R .)
-    MKDISK          reduce using rule 63 (opcion -> GUION R .)
-    RMDISK          reduce using rule 63 (opcion -> GUION R .)
-    FDISK           reduce using rule 63 (opcion -> GUION R .)
-    MOUNT           reduce using rule 63 (opcion -> GUION R .)
-    UNMOUNT         reduce using rule 63 (opcion -> GUION R .)
-    MKFS            reduce using rule 63 (opcion -> GUION R .)
-    LOGIN           reduce using rule 63 (opcion -> GUION R .)
-    LOGOUT          reduce using rule 63 (opcion -> GUION R .)
-    MKGRP           reduce using rule 63 (opcion -> GUION R .)
-    RMGRP           reduce using rule 63 (opcion -> GUION R .)
-    MKUSR           reduce using rule 63 (opcion -> GUION R .)
-    RMUSR           reduce using rule 63 (opcion -> GUION R .)
-    MKFILE          reduce using rule 63 (opcion -> GUION R .)
-    CAT             reduce using rule 63 (opcion -> GUION R .)
-    REMOVE          reduce using rule 63 (opcion -> GUION R .)
-    EDIT            reduce using rule 63 (opcion -> GUION R .)
-    RENAME          reduce using rule 63 (opcion -> GUION R .)
-    MKDIR           reduce using rule 63 (opcion -> GUION R .)
-    COPY            reduce using rule 63 (opcion -> GUION R .)
-    MOVE            reduce using rule 63 (opcion -> GUION R .)
-    FIND            reduce using rule 63 (opcion -> GUION R .)
-    CHOWN           reduce using rule 63 (opcion -> GUION R .)
-    CHGRP           reduce using rule 63 (opcion -> GUION R .)
-    CHMOD           reduce using rule 63 (opcion -> GUION R .)
-    PAUSE           reduce using rule 63 (opcion -> GUION R .)
-    EXECUTE         reduce using rule 63 (opcion -> GUION R .)
-    REP             reduce using rule 63 (opcion -> GUION R .)
-    COMENTARIO      reduce using rule 63 (opcion -> GUION R .)
-    $end            reduce using rule 63 (opcion -> GUION R .)
+    GUION           reduce using rule 64 (opcion -> GUION R .)
+    MKDISK          reduce using rule 64 (opcion -> GUION R .)
+    RMDISK          reduce using rule 64 (opcion -> GUION R .)
+    FDISK           reduce using rule 64 (opcion -> GUION R .)
+    MOUNT           reduce using rule 64 (opcion -> GUION R .)
+    UNMOUNT         reduce using rule 64 (opcion -> GUION R .)
+    MKFS            reduce using rule 64 (opcion -> GUION R .)
+    LOGIN           reduce using rule 64 (opcion -> GUION R .)
+    LOGOUT          reduce using rule 64 (opcion -> GUION R .)
+    MKGRP           reduce using rule 64 (opcion -> GUION R .)
+    RMGRP           reduce using rule 64 (opcion -> GUION R .)
+    MKUSR           reduce using rule 64 (opcion -> GUION R .)
+    RMUSR           reduce using rule 64 (opcion -> GUION R .)
+    MKFILE          reduce using rule 64 (opcion -> GUION R .)
+    CAT             reduce using rule 64 (opcion -> GUION R .)
+    REMOVE          reduce using rule 64 (opcion -> GUION R .)
+    EDIT            reduce using rule 64 (opcion -> GUION R .)
+    RENAME          reduce using rule 64 (opcion -> GUION R .)
+    MKDIR           reduce using rule 64 (opcion -> GUION R .)
+    COPY            reduce using rule 64 (opcion -> GUION R .)
+    MOVE            reduce using rule 64 (opcion -> GUION R .)
+    FIND            reduce using rule 64 (opcion -> GUION R .)
+    CHOWN           reduce using rule 64 (opcion -> GUION R .)
+    CHGRP           reduce using rule 64 (opcion -> GUION R .)
+    CHMOD           reduce using rule 64 (opcion -> GUION R .)
+    PAUSE           reduce using rule 64 (opcion -> GUION R .)
+    EXECUTE         reduce using rule 64 (opcion -> GUION R .)
+    REP             reduce using rule 64 (opcion -> GUION R .)
+    COMENTARIO      reduce using rule 64 (opcion -> GUION R .)
+    $end            reduce using rule 64 (opcion -> GUION R .)
 
 
 state 41
@@ -1739,23 +1746,25 @@ state 57
     (37) argumento -> GUION param IGUAL . valor
     (54) valor -> . ENTERO
     (55) valor -> . RUTA_ARCHIVO_TXT
-    (56) valor -> . RUTA_ARCHIVO_ADSJ
-    (57) valor -> . RUTA_DISCO
-    (58) valor -> . RUTA_CARPETA
-    (59) valor -> . NOMBRE_ARCHIVO
-    (60) valor -> . AJUSTE
-    (61) valor -> . UNIDAD
-    (62) valor -> . CADENA
+    (56) valor -> . RUTA_IMAGEN
+    (57) valor -> . RUTA_ARCHIVO_ADSJ
+    (58) valor -> . RUTA_DISCO
+    (59) valor -> . RUTA_CARPETA
+    (60) valor -> . NOMBRE_ARCHIVO
+    (61) valor -> . AJUSTE
+    (62) valor -> . UNIDAD
+    (63) valor -> . CADENA
 
     ENTERO          shift and go to state 59
     RUTA_ARCHIVO_TXT shift and go to state 60
-    RUTA_ARCHIVO_ADSJ shift and go to state 61
-    RUTA_DISCO      shift and go to state 62
-    RUTA_CARPETA    shift and go to state 63
-    NOMBRE_ARCHIVO  shift and go to state 64
-    AJUSTE          shift and go to state 65
-    UNIDAD          shift and go to state 66
-    CADENA          shift and go to state 67
+    RUTA_IMAGEN     shift and go to state 61
+    RUTA_ARCHIVO_ADSJ shift and go to state 62
+    RUTA_DISCO      shift and go to state 63
+    RUTA_CARPETA    shift and go to state 64
+    NOMBRE_ARCHIVO  shift and go to state 65
+    AJUSTE          shift and go to state 66
+    UNIDAD          shift and go to state 67
+    CADENA          shift and go to state 68
 
     valor                          shift and go to state 58
 
@@ -1869,252 +1878,288 @@ state 60
 
 state 61
 
-    (56) valor -> RUTA_ARCHIVO_ADSJ .
+    (56) valor -> RUTA_IMAGEN .
 
-    GUION           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MKDISK          reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    RMDISK          reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    FDISK           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MOUNT           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    UNMOUNT         reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MKFS            reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    LOGIN           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    LOGOUT          reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MKGRP           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    RMGRP           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MKUSR           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    RMUSR           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MKFILE          reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    CAT             reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    REMOVE          reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    EDIT            reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    RENAME          reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MKDIR           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    COPY            reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    MOVE            reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    FIND            reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    CHOWN           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    CHGRP           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    CHMOD           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    PAUSE           reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    EXECUTE         reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    REP             reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    COMENTARIO      reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
-    $end            reduce using rule 56 (valor -> RUTA_ARCHIVO_ADSJ .)
+    GUION           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MKDISK          reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    RMDISK          reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    FDISK           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MOUNT           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    UNMOUNT         reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MKFS            reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    LOGIN           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    LOGOUT          reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MKGRP           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    RMGRP           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MKUSR           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    RMUSR           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MKFILE          reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    CAT             reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    REMOVE          reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    EDIT            reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    RENAME          reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MKDIR           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    COPY            reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    MOVE            reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    FIND            reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    CHOWN           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    CHGRP           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    CHMOD           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    PAUSE           reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    EXECUTE         reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    REP             reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    COMENTARIO      reduce using rule 56 (valor -> RUTA_IMAGEN .)
+    $end            reduce using rule 56 (valor -> RUTA_IMAGEN .)
 
 
 state 62
 
-    (57) valor -> RUTA_DISCO .
+    (57) valor -> RUTA_ARCHIVO_ADSJ .
 
-    GUION           reduce using rule 57 (valor -> RUTA_DISCO .)
-    MKDISK          reduce using rule 57 (valor -> RUTA_DISCO .)
-    RMDISK          reduce using rule 57 (valor -> RUTA_DISCO .)
-    FDISK           reduce using rule 57 (valor -> RUTA_DISCO .)
-    MOUNT           reduce using rule 57 (valor -> RUTA_DISCO .)
-    UNMOUNT         reduce using rule 57 (valor -> RUTA_DISCO .)
-    MKFS            reduce using rule 57 (valor -> RUTA_DISCO .)
-    LOGIN           reduce using rule 57 (valor -> RUTA_DISCO .)
-    LOGOUT          reduce using rule 57 (valor -> RUTA_DISCO .)
-    MKGRP           reduce using rule 57 (valor -> RUTA_DISCO .)
-    RMGRP           reduce using rule 57 (valor -> RUTA_DISCO .)
-    MKUSR           reduce using rule 57 (valor -> RUTA_DISCO .)
-    RMUSR           reduce using rule 57 (valor -> RUTA_DISCO .)
-    MKFILE          reduce using rule 57 (valor -> RUTA_DISCO .)
-    CAT             reduce using rule 57 (valor -> RUTA_DISCO .)
-    REMOVE          reduce using rule 57 (valor -> RUTA_DISCO .)
-    EDIT            reduce using rule 57 (valor -> RUTA_DISCO .)
-    RENAME          reduce using rule 57 (valor -> RUTA_DISCO .)
-    MKDIR           reduce using rule 57 (valor -> RUTA_DISCO .)
-    COPY            reduce using rule 57 (valor -> RUTA_DISCO .)
-    MOVE            reduce using rule 57 (valor -> RUTA_DISCO .)
-    FIND            reduce using rule 57 (valor -> RUTA_DISCO .)
-    CHOWN           reduce using rule 57 (valor -> RUTA_DISCO .)
-    CHGRP           reduce using rule 57 (valor -> RUTA_DISCO .)
-    CHMOD           reduce using rule 57 (valor -> RUTA_DISCO .)
-    PAUSE           reduce using rule 57 (valor -> RUTA_DISCO .)
-    EXECUTE         reduce using rule 57 (valor -> RUTA_DISCO .)
-    REP             reduce using rule 57 (valor -> RUTA_DISCO .)
-    COMENTARIO      reduce using rule 57 (valor -> RUTA_DISCO .)
-    $end            reduce using rule 57 (valor -> RUTA_DISCO .)
+    GUION           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKDISK          reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RMDISK          reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    FDISK           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MOUNT           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    UNMOUNT         reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKFS            reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    LOGIN           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    LOGOUT          reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKGRP           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RMGRP           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKUSR           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RMUSR           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKFILE          reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CAT             reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    REMOVE          reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    EDIT            reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    RENAME          reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MKDIR           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    COPY            reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    MOVE            reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    FIND            reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CHOWN           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CHGRP           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    CHMOD           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    PAUSE           reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    EXECUTE         reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    REP             reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    COMENTARIO      reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
+    $end            reduce using rule 57 (valor -> RUTA_ARCHIVO_ADSJ .)
 
 
 state 63
 
-    (58) valor -> RUTA_CARPETA .
+    (58) valor -> RUTA_DISCO .
 
-    GUION           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MKDISK          reduce using rule 58 (valor -> RUTA_CARPETA .)
-    RMDISK          reduce using rule 58 (valor -> RUTA_CARPETA .)
-    FDISK           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MOUNT           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    UNMOUNT         reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MKFS            reduce using rule 58 (valor -> RUTA_CARPETA .)
-    LOGIN           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    LOGOUT          reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MKGRP           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    RMGRP           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MKUSR           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    RMUSR           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MKFILE          reduce using rule 58 (valor -> RUTA_CARPETA .)
-    CAT             reduce using rule 58 (valor -> RUTA_CARPETA .)
-    REMOVE          reduce using rule 58 (valor -> RUTA_CARPETA .)
-    EDIT            reduce using rule 58 (valor -> RUTA_CARPETA .)
-    RENAME          reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MKDIR           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    COPY            reduce using rule 58 (valor -> RUTA_CARPETA .)
-    MOVE            reduce using rule 58 (valor -> RUTA_CARPETA .)
-    FIND            reduce using rule 58 (valor -> RUTA_CARPETA .)
-    CHOWN           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    CHGRP           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    CHMOD           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    PAUSE           reduce using rule 58 (valor -> RUTA_CARPETA .)
-    EXECUTE         reduce using rule 58 (valor -> RUTA_CARPETA .)
-    REP             reduce using rule 58 (valor -> RUTA_CARPETA .)
-    COMENTARIO      reduce using rule 58 (valor -> RUTA_CARPETA .)
-    $end            reduce using rule 58 (valor -> RUTA_CARPETA .)
+    GUION           reduce using rule 58 (valor -> RUTA_DISCO .)
+    MKDISK          reduce using rule 58 (valor -> RUTA_DISCO .)
+    RMDISK          reduce using rule 58 (valor -> RUTA_DISCO .)
+    FDISK           reduce using rule 58 (valor -> RUTA_DISCO .)
+    MOUNT           reduce using rule 58 (valor -> RUTA_DISCO .)
+    UNMOUNT         reduce using rule 58 (valor -> RUTA_DISCO .)
+    MKFS            reduce using rule 58 (valor -> RUTA_DISCO .)
+    LOGIN           reduce using rule 58 (valor -> RUTA_DISCO .)
+    LOGOUT          reduce using rule 58 (valor -> RUTA_DISCO .)
+    MKGRP           reduce using rule 58 (valor -> RUTA_DISCO .)
+    RMGRP           reduce using rule 58 (valor -> RUTA_DISCO .)
+    MKUSR           reduce using rule 58 (valor -> RUTA_DISCO .)
+    RMUSR           reduce using rule 58 (valor -> RUTA_DISCO .)
+    MKFILE          reduce using rule 58 (valor -> RUTA_DISCO .)
+    CAT             reduce using rule 58 (valor -> RUTA_DISCO .)
+    REMOVE          reduce using rule 58 (valor -> RUTA_DISCO .)
+    EDIT            reduce using rule 58 (valor -> RUTA_DISCO .)
+    RENAME          reduce using rule 58 (valor -> RUTA_DISCO .)
+    MKDIR           reduce using rule 58 (valor -> RUTA_DISCO .)
+    COPY            reduce using rule 58 (valor -> RUTA_DISCO .)
+    MOVE            reduce using rule 58 (valor -> RUTA_DISCO .)
+    FIND            reduce using rule 58 (valor -> RUTA_DISCO .)
+    CHOWN           reduce using rule 58 (valor -> RUTA_DISCO .)
+    CHGRP           reduce using rule 58 (valor -> RUTA_DISCO .)
+    CHMOD           reduce using rule 58 (valor -> RUTA_DISCO .)
+    PAUSE           reduce using rule 58 (valor -> RUTA_DISCO .)
+    EXECUTE         reduce using rule 58 (valor -> RUTA_DISCO .)
+    REP             reduce using rule 58 (valor -> RUTA_DISCO .)
+    COMENTARIO      reduce using rule 58 (valor -> RUTA_DISCO .)
+    $end            reduce using rule 58 (valor -> RUTA_DISCO .)
 
 
 state 64
 
-    (59) valor -> NOMBRE_ARCHIVO .
+    (59) valor -> RUTA_CARPETA .
 
-    GUION           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MKDISK          reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    RMDISK          reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    FDISK           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MOUNT           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    UNMOUNT         reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MKFS            reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    LOGIN           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    LOGOUT          reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MKGRP           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    RMGRP           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MKUSR           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    RMUSR           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MKFILE          reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    CAT             reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    REMOVE          reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    EDIT            reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    RENAME          reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MKDIR           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    COPY            reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    MOVE            reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    FIND            reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    CHOWN           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    CHGRP           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    CHMOD           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    PAUSE           reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    EXECUTE         reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    REP             reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    COMENTARIO      reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
-    $end            reduce using rule 59 (valor -> NOMBRE_ARCHIVO .)
+    GUION           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MKDISK          reduce using rule 59 (valor -> RUTA_CARPETA .)
+    RMDISK          reduce using rule 59 (valor -> RUTA_CARPETA .)
+    FDISK           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MOUNT           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    UNMOUNT         reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MKFS            reduce using rule 59 (valor -> RUTA_CARPETA .)
+    LOGIN           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    LOGOUT          reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MKGRP           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    RMGRP           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MKUSR           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    RMUSR           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MKFILE          reduce using rule 59 (valor -> RUTA_CARPETA .)
+    CAT             reduce using rule 59 (valor -> RUTA_CARPETA .)
+    REMOVE          reduce using rule 59 (valor -> RUTA_CARPETA .)
+    EDIT            reduce using rule 59 (valor -> RUTA_CARPETA .)
+    RENAME          reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MKDIR           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    COPY            reduce using rule 59 (valor -> RUTA_CARPETA .)
+    MOVE            reduce using rule 59 (valor -> RUTA_CARPETA .)
+    FIND            reduce using rule 59 (valor -> RUTA_CARPETA .)
+    CHOWN           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    CHGRP           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    CHMOD           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    PAUSE           reduce using rule 59 (valor -> RUTA_CARPETA .)
+    EXECUTE         reduce using rule 59 (valor -> RUTA_CARPETA .)
+    REP             reduce using rule 59 (valor -> RUTA_CARPETA .)
+    COMENTARIO      reduce using rule 59 (valor -> RUTA_CARPETA .)
+    $end            reduce using rule 59 (valor -> RUTA_CARPETA .)
 
 
 state 65
 
-    (60) valor -> AJUSTE .
+    (60) valor -> NOMBRE_ARCHIVO .
 
-    GUION           reduce using rule 60 (valor -> AJUSTE .)
-    MKDISK          reduce using rule 60 (valor -> AJUSTE .)
-    RMDISK          reduce using rule 60 (valor -> AJUSTE .)
-    FDISK           reduce using rule 60 (valor -> AJUSTE .)
-    MOUNT           reduce using rule 60 (valor -> AJUSTE .)
-    UNMOUNT         reduce using rule 60 (valor -> AJUSTE .)
-    MKFS            reduce using rule 60 (valor -> AJUSTE .)
-    LOGIN           reduce using rule 60 (valor -> AJUSTE .)
-    LOGOUT          reduce using rule 60 (valor -> AJUSTE .)
-    MKGRP           reduce using rule 60 (valor -> AJUSTE .)
-    RMGRP           reduce using rule 60 (valor -> AJUSTE .)
-    MKUSR           reduce using rule 60 (valor -> AJUSTE .)
-    RMUSR           reduce using rule 60 (valor -> AJUSTE .)
-    MKFILE          reduce using rule 60 (valor -> AJUSTE .)
-    CAT             reduce using rule 60 (valor -> AJUSTE .)
-    REMOVE          reduce using rule 60 (valor -> AJUSTE .)
-    EDIT            reduce using rule 60 (valor -> AJUSTE .)
-    RENAME          reduce using rule 60 (valor -> AJUSTE .)
-    MKDIR           reduce using rule 60 (valor -> AJUSTE .)
-    COPY            reduce using rule 60 (valor -> AJUSTE .)
-    MOVE            reduce using rule 60 (valor -> AJUSTE .)
-    FIND            reduce using rule 60 (valor -> AJUSTE .)
-    CHOWN           reduce using rule 60 (valor -> AJUSTE .)
-    CHGRP           reduce using rule 60 (valor -> AJUSTE .)
-    CHMOD           reduce using rule 60 (valor -> AJUSTE .)
-    PAUSE           reduce using rule 60 (valor -> AJUSTE .)
-    EXECUTE         reduce using rule 60 (valor -> AJUSTE .)
-    REP             reduce using rule 60 (valor -> AJUSTE .)
-    COMENTARIO      reduce using rule 60 (valor -> AJUSTE .)
-    $end            reduce using rule 60 (valor -> AJUSTE .)
+    GUION           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MKDISK          reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    RMDISK          reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    FDISK           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MOUNT           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    UNMOUNT         reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MKFS            reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    LOGIN           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    LOGOUT          reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MKGRP           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    RMGRP           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MKUSR           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    RMUSR           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MKFILE          reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    CAT             reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    REMOVE          reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    EDIT            reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    RENAME          reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MKDIR           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    COPY            reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    MOVE            reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    FIND            reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    CHOWN           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    CHGRP           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    CHMOD           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    PAUSE           reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    EXECUTE         reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    REP             reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    COMENTARIO      reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
+    $end            reduce using rule 60 (valor -> NOMBRE_ARCHIVO .)
 
 
 state 66
 
-    (61) valor -> UNIDAD .
+    (61) valor -> AJUSTE .
 
-    GUION           reduce using rule 61 (valor -> UNIDAD .)
-    MKDISK          reduce using rule 61 (valor -> UNIDAD .)
-    RMDISK          reduce using rule 61 (valor -> UNIDAD .)
-    FDISK           reduce using rule 61 (valor -> UNIDAD .)
-    MOUNT           reduce using rule 61 (valor -> UNIDAD .)
-    UNMOUNT         reduce using rule 61 (valor -> UNIDAD .)
-    MKFS            reduce using rule 61 (valor -> UNIDAD .)
-    LOGIN           reduce using rule 61 (valor -> UNIDAD .)
-    LOGOUT          reduce using rule 61 (valor -> UNIDAD .)
-    MKGRP           reduce using rule 61 (valor -> UNIDAD .)
-    RMGRP           reduce using rule 61 (valor -> UNIDAD .)
-    MKUSR           reduce using rule 61 (valor -> UNIDAD .)
-    RMUSR           reduce using rule 61 (valor -> UNIDAD .)
-    MKFILE          reduce using rule 61 (valor -> UNIDAD .)
-    CAT             reduce using rule 61 (valor -> UNIDAD .)
-    REMOVE          reduce using rule 61 (valor -> UNIDAD .)
-    EDIT            reduce using rule 61 (valor -> UNIDAD .)
-    RENAME          reduce using rule 61 (valor -> UNIDAD .)
-    MKDIR           reduce using rule 61 (valor -> UNIDAD .)
-    COPY            reduce using rule 61 (valor -> UNIDAD .)
-    MOVE            reduce using rule 61 (valor -> UNIDAD .)
-    FIND            reduce using rule 61 (valor -> UNIDAD .)
-    CHOWN           reduce using rule 61 (valor -> UNIDAD .)
-    CHGRP           reduce using rule 61 (valor -> UNIDAD .)
-    CHMOD           reduce using rule 61 (valor -> UNIDAD .)
-    PAUSE           reduce using rule 61 (valor -> UNIDAD .)
-    EXECUTE         reduce using rule 61 (valor -> UNIDAD .)
-    REP             reduce using rule 61 (valor -> UNIDAD .)
-    COMENTARIO      reduce using rule 61 (valor -> UNIDAD .)
-    $end            reduce using rule 61 (valor -> UNIDAD .)
+    GUION           reduce using rule 61 (valor -> AJUSTE .)
+    MKDISK          reduce using rule 61 (valor -> AJUSTE .)
+    RMDISK          reduce using rule 61 (valor -> AJUSTE .)
+    FDISK           reduce using rule 61 (valor -> AJUSTE .)
+    MOUNT           reduce using rule 61 (valor -> AJUSTE .)
+    UNMOUNT         reduce using rule 61 (valor -> AJUSTE .)
+    MKFS            reduce using rule 61 (valor -> AJUSTE .)
+    LOGIN           reduce using rule 61 (valor -> AJUSTE .)
+    LOGOUT          reduce using rule 61 (valor -> AJUSTE .)
+    MKGRP           reduce using rule 61 (valor -> AJUSTE .)
+    RMGRP           reduce using rule 61 (valor -> AJUSTE .)
+    MKUSR           reduce using rule 61 (valor -> AJUSTE .)
+    RMUSR           reduce using rule 61 (valor -> AJUSTE .)
+    MKFILE          reduce using rule 61 (valor -> AJUSTE .)
+    CAT             reduce using rule 61 (valor -> AJUSTE .)
+    REMOVE          reduce using rule 61 (valor -> AJUSTE .)
+    EDIT            reduce using rule 61 (valor -> AJUSTE .)
+    RENAME          reduce using rule 61 (valor -> AJUSTE .)
+    MKDIR           reduce using rule 61 (valor -> AJUSTE .)
+    COPY            reduce using rule 61 (valor -> AJUSTE .)
+    MOVE            reduce using rule 61 (valor -> AJUSTE .)
+    FIND            reduce using rule 61 (valor -> AJUSTE .)
+    CHOWN           reduce using rule 61 (valor -> AJUSTE .)
+    CHGRP           reduce using rule 61 (valor -> AJUSTE .)
+    CHMOD           reduce using rule 61 (valor -> AJUSTE .)
+    PAUSE           reduce using rule 61 (valor -> AJUSTE .)
+    EXECUTE         reduce using rule 61 (valor -> AJUSTE .)
+    REP             reduce using rule 61 (valor -> AJUSTE .)
+    COMENTARIO      reduce using rule 61 (valor -> AJUSTE .)
+    $end            reduce using rule 61 (valor -> AJUSTE .)
 
 
 state 67
 
-    (62) valor -> CADENA .
+    (62) valor -> UNIDAD .
 
-    GUION           reduce using rule 62 (valor -> CADENA .)
-    MKDISK          reduce using rule 62 (valor -> CADENA .)
-    RMDISK          reduce using rule 62 (valor -> CADENA .)
-    FDISK           reduce using rule 62 (valor -> CADENA .)
-    MOUNT           reduce using rule 62 (valor -> CADENA .)
-    UNMOUNT         reduce using rule 62 (valor -> CADENA .)
-    MKFS            reduce using rule 62 (valor -> CADENA .)
-    LOGIN           reduce using rule 62 (valor -> CADENA .)
-    LOGOUT          reduce using rule 62 (valor -> CADENA .)
-    MKGRP           reduce using rule 62 (valor -> CADENA .)
-    RMGRP           reduce using rule 62 (valor -> CADENA .)
-    MKUSR           reduce using rule 62 (valor -> CADENA .)
-    RMUSR           reduce using rule 62 (valor -> CADENA .)
-    MKFILE          reduce using rule 62 (valor -> CADENA .)
-    CAT             reduce using rule 62 (valor -> CADENA .)
-    REMOVE          reduce using rule 62 (valor -> CADENA .)
-    EDIT            reduce using rule 62 (valor -> CADENA .)
-    RENAME          reduce using rule 62 (valor -> CADENA .)
-    MKDIR           reduce using rule 62 (valor -> CADENA .)
-    COPY            reduce using rule 62 (valor -> CADENA .)
-    MOVE            reduce using rule 62 (valor -> CADENA .)
-    FIND            reduce using rule 62 (valor -> CADENA .)
-    CHOWN           reduce using rule 62 (valor -> CADENA .)
-    CHGRP           reduce using rule 62 (valor -> CADENA .)
-    CHMOD           reduce using rule 62 (valor -> CADENA .)
-    PAUSE           reduce using rule 62 (valor -> CADENA .)
-    EXECUTE         reduce using rule 62 (valor -> CADENA .)
-    REP             reduce using rule 62 (valor -> CADENA .)
-    COMENTARIO      reduce using rule 62 (valor -> CADENA .)
-    $end            reduce using rule 62 (valor -> CADENA .)
+    GUION           reduce using rule 62 (valor -> UNIDAD .)
+    MKDISK          reduce using rule 62 (valor -> UNIDAD .)
+    RMDISK          reduce using rule 62 (valor -> UNIDAD .)
+    FDISK           reduce using rule 62 (valor -> UNIDAD .)
+    MOUNT           reduce using rule 62 (valor -> UNIDAD .)
+    UNMOUNT         reduce using rule 62 (valor -> UNIDAD .)
+    MKFS            reduce using rule 62 (valor -> UNIDAD .)
+    LOGIN           reduce using rule 62 (valor -> UNIDAD .)
+    LOGOUT          reduce using rule 62 (valor -> UNIDAD .)
+    MKGRP           reduce using rule 62 (valor -> UNIDAD .)
+    RMGRP           reduce using rule 62 (valor -> UNIDAD .)
+    MKUSR           reduce using rule 62 (valor -> UNIDAD .)
+    RMUSR           reduce using rule 62 (valor -> UNIDAD .)
+    MKFILE          reduce using rule 62 (valor -> UNIDAD .)
+    CAT             reduce using rule 62 (valor -> UNIDAD .)
+    REMOVE          reduce using rule 62 (valor -> UNIDAD .)
+    EDIT            reduce using rule 62 (valor -> UNIDAD .)
+    RENAME          reduce using rule 62 (valor -> UNIDAD .)
+    MKDIR           reduce using rule 62 (valor -> UNIDAD .)
+    COPY            reduce using rule 62 (valor -> UNIDAD .)
+    MOVE            reduce using rule 62 (valor -> UNIDAD .)
+    FIND            reduce using rule 62 (valor -> UNIDAD .)
+    CHOWN           reduce using rule 62 (valor -> UNIDAD .)
+    CHGRP           reduce using rule 62 (valor -> UNIDAD .)
+    CHMOD           reduce using rule 62 (valor -> UNIDAD .)
+    PAUSE           reduce using rule 62 (valor -> UNIDAD .)
+    EXECUTE         reduce using rule 62 (valor -> UNIDAD .)
+    REP             reduce using rule 62 (valor -> UNIDAD .)
+    COMENTARIO      reduce using rule 62 (valor -> UNIDAD .)
+    $end            reduce using rule 62 (valor -> UNIDAD .)
+
+
+state 68
+
+    (63) valor -> CADENA .
+
+    GUION           reduce using rule 63 (valor -> CADENA .)
+    MKDISK          reduce using rule 63 (valor -> CADENA .)
+    RMDISK          reduce using rule 63 (valor -> CADENA .)
+    FDISK           reduce using rule 63 (valor -> CADENA .)
+    MOUNT           reduce using rule 63 (valor -> CADENA .)
+    UNMOUNT         reduce using rule 63 (valor -> CADENA .)
+    MKFS            reduce using rule 63 (valor -> CADENA .)
+    LOGIN           reduce using rule 63 (valor -> CADENA .)
+    LOGOUT          reduce using rule 63 (valor -> CADENA .)
+    MKGRP           reduce using rule 63 (valor -> CADENA .)
+    RMGRP           reduce using rule 63 (valor -> CADENA .)
+    MKUSR           reduce using rule 63 (valor -> CADENA .)
+    RMUSR           reduce using rule 63 (valor -> CADENA .)
+    MKFILE          reduce using rule 63 (valor -> CADENA .)
+    CAT             reduce using rule 63 (valor -> CADENA .)
+    REMOVE          reduce using rule 63 (valor -> CADENA .)
+    EDIT            reduce using rule 63 (valor -> CADENA .)
+    RENAME          reduce using rule 63 (valor -> CADENA .)
+    MKDIR           reduce using rule 63 (valor -> CADENA .)
+    COPY            reduce using rule 63 (valor -> CADENA .)
+    MOVE            reduce using rule 63 (valor -> CADENA .)
+    FIND            reduce using rule 63 (valor -> CADENA .)
+    CHOWN           reduce using rule 63 (valor -> CADENA .)
+    CHGRP           reduce using rule 63 (valor -> CADENA .)
+    CHMOD           reduce using rule 63 (valor -> CADENA .)
+    PAUSE           reduce using rule 63 (valor -> CADENA .)
+    EXECUTE         reduce using rule 63 (valor -> CADENA .)
+    REP             reduce using rule 63 (valor -> CADENA .)
+    COMENTARIO      reduce using rule 63 (valor -> CADENA .)
+    $end            reduce using rule 63 (valor -> CADENA .)
 

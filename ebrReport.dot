@@ -3,12 +3,8 @@ digraph G {
     tbl [shape=none fontname="Arial" label=<
         <table border="1" cellborder="0" cellspacing="0">
         <tr>
-            <td bgcolor="teal" align="left"><font color="white"> REPORTE DE EBR </font></td>
+            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
             <td bgcolor="teal" align="left"><font color="white"> </font></td>
-        </tr>
-        <tr>
-            <td bgcolor="tomato" align="left"><font color="white"> Particion </font></td>
-            <td bgcolor="tomato" align="left"><font color="white"> </font></td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_status </td>
@@ -35,8 +31,8 @@ digraph G {
             <td bgcolor="white" align="left"> 1001 </td>
         </tr>
         <tr>
-            <td bgcolor="tomato" align="left"><font color="white"> Particion </font></td>
-            <td bgcolor="tomato" align="left"><font color="white"> </font></td>
+            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
+            <td bgcolor="teal" align="left"><font color="white"> </font></td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> part_status </td>

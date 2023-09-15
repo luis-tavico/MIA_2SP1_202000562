@@ -1,0 +1,136 @@
+digraph G {
+  subgraph cluster { margin="0.0" penwidth="1.0"
+    tbl [shape=none fontname="Arial" label=<
+        <table border="1" cellborder="0" cellspacing="0">
+        <tr>
+            <td bgcolor="springgreen4" align="left"><font color="white"> REPORTE DE MBR </font></td>
+            <td bgcolor="springgreen4" align="left"><font color="white"> </font></td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> mbr_tamño </td>
+            <td bgcolor="white" align="left"> 1024 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> mbr_fecha_creacion </td>
+            <td bgcolor="white" align="left"> 2023-09-14 21:00:48 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> mbr_disk_signature </td>
+            <td bgcolor="white" align="left"> 1007 </td>
+        </tr>
+        <tr>
+            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
+            <td bgcolor="teal" align="left"><font color="white"> </font></td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_status </td>
+            <td bgcolor="white" align="left"> 1 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_type </td>
+            <td bgcolor="white" align="left"> P </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_fit </td>
+            <td bgcolor="white" align="left"> W </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_start </td>
+            <td bgcolor="white" align="left"> 133 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_size </td>
+            <td bgcolor="white" align="left"> 167 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_name </td>
+            <td bgcolor="white" align="left"> Part1 </td>
+        </tr>
+        <tr>
+            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
+            <td bgcolor="teal" align="left"><font color="white"> </font></td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_status </td>
+            <td bgcolor="white" align="left"> 1 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_type </td>
+            <td bgcolor="white" align="left"> E </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_fit </td>
+            <td bgcolor="white" align="left"> W </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_start </td>
+            <td bgcolor="white" align="left"> 300 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_size </td>
+            <td bgcolor="white" align="left"> 300 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_name </td>
+            <td bgcolor="white" align="left"> Part2 </td>
+        </tr>
+        <tr>
+            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
+            <td bgcolor="teal" align="left"><font color="white"> </font></td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_status </td>
+            <td bgcolor="white" align="left"> 1 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_type </td>
+            <td bgcolor="white" align="left"> P </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_fit </td>
+            <td bgcolor="white" align="left"> W </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_start </td>
+            <td bgcolor="white" align="left"> 600 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_size </td>
+            <td bgcolor="white" align="left"> 200 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_name </td>
+            <td bgcolor="white" align="left"> Part3 </td>
+        </tr>
+        <tr>
+            <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>
+            <td bgcolor="teal" align="left"><font color="white"> </font></td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_status </td>
+            <td bgcolor="white" align="left"> 1 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_type </td>
+            <td bgcolor="white" align="left"> P </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_fit </td>
+            <td bgcolor="white" align="left"> W </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_start </td>
+            <td bgcolor="white" align="left"> 800 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_size </td>
+            <td bgcolor="white" align="left"> 200 </td>
+        </tr>
+        <tr>
+            <td bgcolor="white" align="center"> part_name </td>
+            <td bgcolor="white" align="left"> Part4 </td>
+        </tr>
+        </table>
+    >];
+  }
+}
