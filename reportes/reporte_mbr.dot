@@ -12,11 +12,11 @@ digraph G {
         </tr>
         <tr>
             <td bgcolor="white" align="center"> mbr_fecha_creacion </td>
-            <td bgcolor="white" align="left"> 2023-09-15 22:55:53 </td>
+            <td bgcolor="white" align="left"> 2023-09-16 00:14:38 </td>
         </tr>
         <tr>
             <td bgcolor="white" align="center"> mbr_disk_signature </td>
-            <td bgcolor="white" align="left"> 1019 </td>
+            <td bgcolor="white" align="left"> 1012 </td>
         </tr>
         <tr>
             <td bgcolor="teal" align="left"><font color="white"> Particion </font></td>

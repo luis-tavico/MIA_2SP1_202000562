@@ -322,7 +322,7 @@ def comando_ejecutar(parametro, valor):
                                         puntero = ebr.getPart_next()
                                         #obtener ebr
                                         ebr = Ebr()
-                                        with open(path, 'rb+') as archivo:
+                                        with open(script.getPath(), 'rb+') as archivo:
                                             archivo.seek(puntero)
                                             contenido = archivo.read(ebr.getLength())
                                         ebr = ebr.unpack_data(contenido)
@@ -672,7 +672,7 @@ def comando_ejecutar(parametro, valor):
                                     puntero = ebr.getPart_next()
                                     #obtener ebr
                                     ebr = Ebr()
-                                    with open(path, 'rb+') as archivo:
+                                    with open(script.getPath(), 'rb+') as archivo:
                                         archivo.seek(puntero)
                                         contenido = archivo.read(ebr.getLength())
                                     ebr = ebr.unpack_data(contenido)
@@ -1547,7 +1547,10 @@ def generarReporteDisco(path, pathReport):
                 ebr = ebr.unpack_data(contenido)
             label += '|{Extendida|{'
             while True:
-                label += 'EBR|Logica'
+                if (ebr.getPart_status() == "1"):
+                    label += 'EBR|Logica'
+                elif (ebr.getPart_status() == "0"):
+                    label += 'EBR|Libre'
                 if (ebr.getPart_next() == -1):
                     break
                 else:
