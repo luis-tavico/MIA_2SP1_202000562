@@ -222,37 +222,110 @@ def comando_ejecutar(parametro, valor):
                 #eliminar particion
                 if (script.getDelete().lower() == "full"):
                     for partition in mbr.getPartitions():
-                        if (partition.getPart_name().rstrip("\x00") == script.getName()):
-                            question = (f'¿Desea eliminar la particion {script.getName()} (s/n) ')
-                            r = input("\033[1;33m<<Confirm>> {}\033[00m\n" .format(question))
-                            if (r == 's'): 
-                                content = ''
-                                for i in range (partition.getPart_s()):
-                                    content += '\x00' 
-                                content_binary = content.encode('latin-1')
-                                #print(content)
-                                with open(script.getPath(), 'rb+') as archivo:
-                                    archivo.seek(partition.getPart_start())
-                                    archivo.write(content_binary)
-                                #modificar particion
-                                partition.setPart_status("0")
-                                #escribir mbr
-                                with open(script.getPath(), 'rb+') as archivo:
-                                    archivo.write(mbr.pack_data())
-                                #escribir particiones
-                                pos = mbr.getLength()
-                                for particion in mbr.getPartitions():
+                        if (partition.getPart_type().lower() == "p"):
+                            if (partition.getPart_name().rstrip("\x00") == script.getName()):
+                                question = (f'¿Desea eliminar la particion {script.getName()} (s/n) ')
+                                r = input("\033[1;33m<<Confirm>> {}\033[00m\n" .format(question))
+                                if (r == 's'): 
+                                    content = ''
+                                    for i in range (partition.getPart_s()):
+                                        content += '\x00' 
+                                    content_binary = content.encode('latin-1')
+                                    #print(content)
                                     with open(script.getPath(), 'rb+') as archivo:
-                                        archivo.seek(pos)
-                                        archivo.write(particion.pack_data())
-                                    pos += particion.getLength()
+                                        archivo.seek(partition.getPart_start())
+                                        archivo.write(content_binary)
+                                    #modificar particion
+                                    partition.setPart_status("0")
+                                    #escribir mbr
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.write(mbr.pack_data())
+                                    #escribir particiones
+                                    pos = mbr.getLength()
+                                    for particion in mbr.getPartitions():
+                                        with open(script.getPath(), 'rb+') as archivo:
+                                            archivo.seek(pos)
+                                            archivo.write(particion.pack_data())
+                                        pos += particion.getLength()
 
-                                print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
-                                print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
-                                return None
+                                    print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
+                                    print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                    return None
+                                else:
+                                    print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                    return None
+                        elif (partition.getPart_type().lower() == "e"):
+                            if (partition.getPart_name().rstrip("\x00") == script.getName()):
+                                question = (f'¿Desea eliminar la particion {script.getName()} (s/n) ')
+                                r = input("\033[1;33m<<Confirm>> {}\033[00m\n" .format(question))
+                                if (r == 's'): 
+                                    content = ''
+                                    for i in range (partition.getPart_s()):
+                                        content += '\x00' 
+                                    content_binary = content.encode('latin-1')
+                                    #print(content)
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.seek(partition.getPart_start())
+                                        archivo.write(content_binary)
+                                    #modificar particion
+                                    partition.setPart_status("0")
+                                    #escribir mbr
+                                    with open(script.getPath(), 'rb+') as archivo:
+                                        archivo.write(mbr.pack_data())
+                                    #escribir particiones
+                                    pos = mbr.getLength()
+                                    for particion in mbr.getPartitions():
+                                        with open(script.getPath(), 'rb+') as archivo:
+                                            archivo.seek(pos)
+                                            archivo.write(particion.pack_data())
+                                        pos += particion.getLength()
+
+                                    print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
+                                    print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                    return None
+                                else:
+                                    print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                    return None
                             else:
-                                print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
-                                return None
+                                puntero = partition.getPart_start()
+                                #obtener ebr
+                                ebr = Ebr()
+                                with open(script.getPath(), 'rb+') as archivo:
+                                    archivo.seek(puntero)
+                                    contenido = archivo.read(ebr.getLength())
+                                ebr = ebr.unpack_data(contenido)
+                                while True:
+                                    if (ebr.getPart_name().rstrip("\x00") == script.getName()):
+                                        question = (f'¿Desea eliminar la particion {script.getName()} (s/n) ')
+                                        r = input("\033[1;33m<<Confirm>> {}\033[00m\n" .format(question))
+                                        if (r == 's'): 
+                                            content = ''
+                                            for i in range (ebr.getPart_s()):
+                                                content += '\x00' 
+                                            content_binary = content.encode('latin-1')
+                                            #print(content)
+                                            with open(script.getPath(), 'rb+') as archivo:
+                                                archivo.seek(ebr.getPart_start())
+                                                archivo.write(content_binary)
+                                            #modificar particion
+                                            ebr.setPart_status("0")
+                                            #escribir mbr
+                                            with open(script.getPath(), 'rb+') as archivo:
+                                                archivo.seek(ebr.getPart_start()-32)
+                                                archivo.write(ebr.pack_data())
+                                            print("\033[1;32m<<Success>> {}\033[00m" .format("Particion eliminada exitosamente."))
+                                            print("\033[36m<<System>> {}\033[00m" .format("...Comando fdisk ejecutado"))
+                                            return None
+                                    if (ebr.getPart_next() == -1):
+                                        break
+                                    else:
+                                        puntero = ebr.getPart_next()
+                                        #obtener ebr
+                                        ebr = Ebr()
+                                        with open(path, 'rb+') as archivo:
+                                            archivo.seek(puntero)
+                                            contenido = archivo.read(ebr.getLength())
+                                        ebr = ebr.unpack_data(contenido)
                     print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
                     print("\033[91m<<Error>> {}\033[00m" .format("No se pudo eliminar la particion."))
                     return None
@@ -567,11 +640,43 @@ def comando_ejecutar(parametro, valor):
                 #buscar particion
                 num_particion = ""
                 for i, partition in enumerate(mbr.getPartitions()):
-                    if (partition.getPart_name().rstrip("\x00") == script.getName()):
-                        numeros = re.findall(r'\d+', script.getName())
-                        for numero in numeros:
-                            num_particion += numero
-                        break
+                    if (partition.getPart_type().lower() == "p" and partition.getPart_status() == "1"):
+                        if (partition.getPart_name().rstrip("\x00") == script.getName()):
+                            numeros = re.findall(r'\d+', script.getName())
+                            for numero in numeros: 
+                                num_particion += numero
+                            break
+                    elif (partition.getPart_type().lower() == "e" and partition.getPart_status() == "1"):
+                        if (partition.getPart_name().rstrip("\x00") == script.getName()):
+                            numeros = re.findall(r'\d+', script.getName())
+                            for numero in numeros: 
+                                num_particion += numero
+                            break
+                        else:
+                            puntero = partition.getPart_start()
+                            #obtener ebr
+                            ebr = Ebr()
+                            with open(script.getPath(), 'rb+') as archivo:
+                                archivo.seek(puntero)
+                                contenido = archivo.read(ebr.getLength())
+                            ebr = ebr.unpack_data(contenido)
+                            while True:
+                                if (ebr.getPart_name().rstrip("\x00") == script.getName()):
+                                    numeros = re.findall(r'\d+', script.getName())
+                                    for numero in numeros: 
+                                        num_particion += numero
+                                    break
+                                if (ebr.getPart_next() == -1):
+                                    break
+                                else:
+                                    puntero = ebr.getPart_next()
+                                    #obtener ebr
+                                    ebr = Ebr()
+                                    with open(path, 'rb+') as archivo:
+                                        archivo.seek(puntero)
+                                        contenido = archivo.read(ebr.getLength())
+                                    ebr = ebr.unpack_data(contenido)
+
                 if (num_particion == ""):
                     script.errors += 1
                     print("\033[91m<<Error>> {}\033[00m" .format("La particion no existe."))
