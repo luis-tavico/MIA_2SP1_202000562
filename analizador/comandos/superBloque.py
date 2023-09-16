@@ -137,6 +137,7 @@ class SuperBloque:
     
     def getLength(self):
         return struct.calcsize('iiiiiqqiiiiiiiiii')
+    #devuelve 80
     
 '''
 from datetime import datetime

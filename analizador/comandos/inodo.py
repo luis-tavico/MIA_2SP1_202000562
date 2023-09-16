@@ -2,7 +2,7 @@ import struct
 from datetime import datetime
 
 class Inodo:
-    def __init__(self, uid, gid, s, atime, ctime, mtime, block, type, perm):
+    def __init__(self, uid = 0, gid = 0, s = 0, atime = 0, ctime = 0, mtime = 0, block = 0, type = '', perm = 0):
         self.uid = uid
         self.gid = gid
         self.s = s
@@ -80,6 +80,7 @@ class Inodo:
     
     def getLength(self):
         return struct.calcsize('iiiqqqici')
+        #devulve 52
 
 '''
 from datetime import datetime

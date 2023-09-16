@@ -64,11 +64,8 @@ tokens = [
     'RUTA_DISCO',
     'RUTA_CARPETA',
     'NOMBRE_ARCHIVO',
-    'AJUSTE',
-    'UNIDAD',
     'ENTERO',
     'CADENA',
-    'FILEN',
     'COMENTARIO'
 ] + list(reserved_words.values())
 
@@ -100,21 +97,9 @@ def t_NOMBRE_ARCHIVO(t):
     r'(\"(\w|\s)+\.txt\")|((\w)+\.txt)'
     return t
 
-def t_AJUSTE(t):
-    r'BF|FF|WF'
-    return t
-
-def t_UNIDAD(t):
-    r'B|K|M'
-    return t
-
-def t_FILEN(t):
-    r'file[0-9][0-9]*'
-    return t
-
 def t_CADENA(t):
     r'[a-zA-z_0-9][a-zA-z_0-9]*'
-    t.type = reserved_words.get(t.value, 'CADENA')
+    t.type = reserved_words.get(t.value.lower(), 'CADENA')
     return t
 
 def t_ENTERO(t):
@@ -143,6 +128,7 @@ def find_column(input, token):
     return (token.lexpos - line_start) + 1
 
 lexer = lex.lex()
+lexer.ignore_case = True
 
 global waiting_scripts
 waiting_scripts = ""
@@ -219,9 +205,9 @@ def p_param(t):
              | ID
              | GRP
              | CONT
-             | FILEN
              | DESTINO
-             | UGO'''
+             | UGO
+             | RUTA'''
     t[0] = t[1]
 
 def p_valor(t):
@@ -232,8 +218,6 @@ def p_valor(t):
              | RUTA_DISCO
              | RUTA_CARPETA
              | NOMBRE_ARCHIVO
-             | AJUSTE
-             | UNIDAD
              | CADENA'''
     t[0] = t[1]
 
