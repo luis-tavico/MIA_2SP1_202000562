@@ -1244,6 +1244,7 @@ def comando_ejecutar(parametro, valor):
     elif (comando.lower() == 'execute'):
         if (parametro.lower() == "path"):
             print("leyendo ruta del archivo...")
+            print(valor)
             script.setPath(valor)
         elif (parametro.lower() == 'ejecutar'):
             if script.errors == 0:
@@ -1274,9 +1275,14 @@ def comando_ejecutar(parametro, valor):
         elif (parametro.lower() == "ejecutar"):
             if (script.errors == 0):
                 #buscar particion o disco
+                path = ""
                 if script.getId() != "":
                     if script.getId() in particiones_montadas:   
                         path = particiones_montadas[script.getId()]
+                if path == "":
+                    print("\033[91m<<Error>> {}\033[00m" .format("La particion no esta montada."))
+                    print("\033[91m<<Error>> {}\033[00m" .format("No se pudo generar el reporte."))
+                    return None
                 if not(os.path.exists(path)):
                     return None
                 #obtener mbr
@@ -1381,7 +1387,7 @@ def generarReporteMBR(path, pathReport):
         code += '            <td bgcolor="white" align="center"> part_name </td>\n'
         code += '            <td bgcolor="white" align="left"> ' + mbr.getPartitions()[i].getPart_name().rstrip("\x00") + ' </td>\n'
         code += '        </tr>\n'
-        if (mbr.getPartitions()[i].getPart_type().lower() == "e" ):
+        if (mbr.getPartitions()[i].getPart_type().lower() == "e" and mbr.getPartitions()[i].getPart_status() == "1"):
             puntero = mbr.getPartitions()[i].getPart_start()
             #generar reporte de ebr
             generarReporteEBR(path, pathReport, puntero)
@@ -1545,25 +1551,24 @@ def generarReporteDisco(path, pathReport):
                     archivo.seek(puntero)
                     contenido = archivo.read(ebr.getLength())
                 ebr = ebr.unpack_data(contenido)
-            label += '|{Extendida|{'
-            while True:
-                if (ebr.getPart_status() == "1"):
-                    label += 'EBR|Logica'
-                elif (ebr.getPart_status() == "0"):
-                    label += 'EBR|Libre'
-                if (ebr.getPart_next() == -1):
-                    break
-                else:
-                    puntero = ebr.getPart_next()
-                    #obtener ebr
-                    ebr = Ebr()
-                    with open(path, 'rb+') as archivo:
-                        archivo.seek(puntero)
-                        contenido = archivo.read(ebr.getLength())
-                    ebr = ebr.unpack_data(contenido)
-                    label += '|'
-
-            label += '}}'
+                label += '|{Extendida|{'
+                while True:
+                    if (ebr.getPart_status() == "1"):
+                        label += 'EBR|Logica'
+                    elif (ebr.getPart_status() == "0"):
+                        label += 'EBR|Libre'
+                    if (ebr.getPart_next() == -1):
+                        break
+                    else:
+                        puntero = ebr.getPart_next()
+                        #obtener ebr
+                        ebr = Ebr()
+                        with open(path, 'rb+') as archivo:
+                            archivo.seek(puntero)
+                            contenido = archivo.read(ebr.getLength())
+                        ebr = ebr.unpack_data(contenido)
+                        label += '|'
+                label += '}}'
         pos += particion.getLength()
     code += '        node_disk [shape="record" label="' + label + '"];\n'
     code += '    }\n'
